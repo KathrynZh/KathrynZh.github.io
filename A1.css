@@ -1,0 +1,55 @@
+body{
+	background-image: url(https://nofilmschool.com/media-library/sheet-music.jpg?id=34079713&width=1245&height=700&quality=90&coordinates=0%2C300%2C0%2C300);
+	background-size: cover;
+	background-position: center;
+	background-color: rgba(0, 0, 0, 0.5);
+	background-blend-mode: overlay;
+	width: 90%;
+	margin: auto;
+	font-family: "Open Sans", sans-serif;
+  	font-optical-sizing: auto;
+  	font-weight: <weight>;
+  	font-style: normal;
+  	font-variation-settings:
+    "wdth" 100;
+	color: ghostwhite;
+}
+h1{
+	width: 30%;
+	margin: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+h2{
+	border-bottom: 2px solid ghostwhite;
+	padding: 10px;
+	clear: both;
+}
+img{
+	float: right;
+	margin: 30px 20px 40px 0;
+}
+.themes{
+	float: left;
+}
+.details{
+	float: left;
+	width: 65%;
+	margin-left: 20px;
+}
+table{
+	width: 100%;
+}
+table{
+	border: 1px solid ghostwhite;
+}
+th{
+	border-bottom: 1px solid ghostwhite;
+}
+.top3{
+	width: 50%;
+	float: right;
+}
+a{
+	color: antiquewhite;
+}
