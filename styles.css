@@ -1,0 +1,84 @@
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background: #002a5c; /* TMU blue */
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.logo {
+    max-width: 150px; /* Adjust width as needed */
+    display: block;
+    margin: 0 auto 20px; /* Center the logo and add spacing below */
+}
+
+h1 {
+    margin: 0;
+    font-size: 2.5em; /* Larger title size */
+}
+
+.meta {
+    font-size: 1em;
+    margin-top: 5px;
+    font-weight: 300; /* Lighter weight for meta text */
+}
+
+article {
+    background: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+h2 {
+    color: #002a5c; /* TMU blue */
+    font-size: 1.8em; /* Slightly larger for section titles */
+    margin-top: 20px;
+}
+
+p {
+    font-size: 1em; /* Standard paragraph size */
+    margin-bottom: 15px; /* Space between paragraphs */
+}
+
+ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background: #002a5c; /* TMU blue */
+    color: #ffffff;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    font-size: 0.9em; /* Slightly smaller font size for footer */
+}
+
+/* Cover Image Styling */
+.cover-image-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.cover-image {
+    width: 100%;
+    max-width: 600px; /* Adjust as needed */
+    height: auto;
+    border: 1px solid #ccc; /* Optional: adds a border */
+}
