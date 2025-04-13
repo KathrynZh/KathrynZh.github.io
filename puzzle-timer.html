@@ -156,6 +156,7 @@
         .btn-pause {
             color: black;
             background-color: white;
+            margin-top: 10px;
         }
 
         .btn-pause:hover {
@@ -249,6 +250,17 @@
             }
         }
         
+        @keyframes modalFadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
         /* ------------ Results Section ------------ */
         .result-container {
             text-align: center;
@@ -554,7 +566,16 @@
         function closeModal() {
             startTimerSession();
             // Just close the modal without submitting
-            piecesModal.style.display = 'none';
+            const modalContent = piecesModal.querySelector('.modal-content');
+
+            // 应用关闭动画
+            modalContent.style.animation = 'modalFadeOut 0.1s forwards';
+
+            // 在动画结束后隐藏整个 modal，并恢复打开动画状态
+            setTimeout(() => {
+                piecesModal.style.display = 'none';
+                modalContent.style.animation = 'modalFadeIn 0.1s forwards'; // 为下次打开做准备
+            }, 100);
         }
 
         function submitPieces() {
