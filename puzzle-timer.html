@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Activity Timer</title>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for typography -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <style>
+        /* ------------ Base Styles ------------ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 25px;
+            border-radius: 20px;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        h1, h2, h3 {
+            color: #4361ee;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        p {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        /* ------------ Form Elements ------------ */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #4361ee;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* ------------ Buttons ------------ */
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin: 5px;
+            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn:hover {
+            background-color: #3250d2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(67, 97, 238, 0.25);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-success {
+            background-color: #42ba96;
+        }
+        
+        .btn-success:hover {
+            background-color: #369678;
+        }
+        
+        .btn-danger {
+            background-color: #df4759;
+        }
+        
+        .btn-danger:hover {
+            background-color: #cf3c4e;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-pause {
+            color: black;
+            background-color: white;
+        }
+
+        .btn-pause:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .back-button {
+            font-size: 20px;
+            color: #6c757d;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+            color: #6c757d;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .close-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* ------------ Timer Display ------------ */
+        .timer-display {
+            text-align: center;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #4361ee;
+            margin: 30px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+        }
+        
+        .timer-container {
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin: 20px 0;
+        }
+        
+        /* ------------ Modal Styles ------------ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            animation: modalFadeIn 0.3s forwards;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* ------------ Results Section ------------ */
+        .result-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .result-icon {
+            font-size: 60px;
+            color: #f8d65b;
+            margin-bottom: 20px;
+            animation: bounce 1s;
+        }
+        
+        .result-time {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4361ee;
+            margin: 15px 0;
+        }
+        
+        .result-pieces {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #6c757d;
+            margin: 10px 0;
+        }
+        
+        /* ------------ Section Visibility Classes ------------ */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ------------ Additional Animations ------------ */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+        
+        /* ------------ Responsive Adjustments ------------ */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .timer-display {
+                font-size: 3rem;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Page -->
+        <div id="welcome-page" class="page active">
+            <h1>Puzzle Activity Timer</h1>
+            <p>Track your time as you contribute to this puzzle!</p>
+            
+            <div class="form-group">
+                <label for="email">Email Address (Optional)</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter your email">
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="notification-consent">
+                <label for="notification-consent">I'd like to receive a completion email when the jigsaw is completed</label>
+            </div>
+            
+            <div class="btn-group">
+                <button id="start-timer" class="btn btn-success">
+                    <i class="fas fa-play"></i> Start Timer
+                </button>
+            </div>
+        </div>
+        
+        <!-- Timer Page -->
+        <div id="timer-page" class="page">
+            <button id="back-to-welcome" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2>Enjoy Your Time!</h2>
+            <p>The timer is running. Click Pause to take a break. Click Stop when you've done for today!</p>
+            
+            <div class="timer-container">
+                <div id="timer" class="timer-display pulse">00:00:00</div>
+            </div>
+
+            <button id="stop-timer" class="btn btn-danger btn-block">
+                <i class="fas fa-stop"></i> Stop Timer
+            </button>
+
+            <button id="pause-resume-timer" class="btn btn-pause btn-block">
+                <i class="fas fa-pause"></i> <span>Pause</span>
+            </button>
+        </div>
+        
+        <!-- Puzzle Pieces Modal -->
+        <div id="pieces-modal" class="modal">
+            <div class="modal-content">
+                <button id="close-modal" class="close-button">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h3>Great Job!</h3>
+                <p>How many puzzle pieces did you complete?</p>
+                
+                <div class="form-group">
+                    <input type="number" id="pieces-count" class="form-control" placeholder="Number of pieces (optional)">
+                </div>
+                
+                <div class="btn-group">
+                    <button id="submit-pieces" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Page -->
+        <div id="results-page" class="page">
+            <div class="result-container">
+                <div class="result-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                
+                <h2>Thank You for Participating!</h2>
+                
+                <div class="result-time">
+                    <i class="fas fa-clock"></i> <span id="final-time">00:00:00</span>
+                </div>
+                
+                <div id="pieces-result" class="result-pieces" style="display: none;">
+                    <i class="fas fa-puzzle-piece"></i> <span id="final-pieces">0</span> pieces completed!
+                </div>
+                
+                <p id="email-confirmation" style="display: none;">
+                    We will send you a completion email once the jigsaw is completed.
+                </p>
+                
+                <button id="restart" class="btn btn-primary btn-block">
+                    <i class="fas fa-redo"></i> Start Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ------------ Global Variables ------------
+        let timerInterval;
+        let startTime;
+        let isPaused = false;
+        let elapsedTime = 0;
+        let userEmail = "";
+        let notificationConsent = false;
+        let piecesCompleted = 0;
+        
+        // ------------ DOM Elements ------------
+        const welcomePage = document.getElementById('welcome-page');
+        const timerPage = document.getElementById('timer-page');
+        const resultsPage = document.getElementById('results-page');
+        const piecesModal = document.getElementById('pieces-modal');
+        
+        const emailInput = document.getElementById('email');
+        const notificationConsentCheckbox = document.getElementById('notification-consent');
+        const timerDisplay = document.getElementById('timer');
+        const finalTimeDisplay = document.getElementById('final-time');
+        const piecesResult = document.getElementById('pieces-result');
+        const finalPiecesDisplay = document.getElementById('final-pieces');
+        const emailConfirmation = document.getElementById('email-confirmation');
+        
+        // ------------ Button Event Listeners ------------
+        document.getElementById('start-timer').addEventListener('click', () => {
+            startTimerSession(false);
+        });
+        
+        document.getElementById('pause-resume-timer').addEventListener('click', pauseTimer);
+        document.getElementById('stop-timer').addEventListener('click', stopTimer);
+        document.getElementById('back-to-welcome').addEventListener('click', backToWelcome);
+        document.getElementById('close-modal').addEventListener('click', closeModal);
+        document.getElementById('submit-pieces').addEventListener('click', submitPieces);
+        document.getElementById('restart').addEventListener('click', resetApp);
+        
+        // ------------ Timer Functions ------------
+        function startTimerSession(anonymous) {
+            if (!anonymous) {
+                userEmail = emailInput.value.trim();
+                notificationConsent = notificationConsentCheckbox.checked;
+            }
+            
+            // Switch to timer page
+            switchPage(welcomePage, timerPage);
+            
+            // Start the timer
+            startTime = Date.now() - elapsedTime;
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+        
+        function updateTimer() {
+            const currentTime = Date.now();
+            elapsedTime = currentTime - startTime;
+            
+            // Format time
+            const formattedTime = formatTime(elapsedTime);
+            timerDisplay.textContent = formattedTime;
+        }
+
+        function pauseTimer() {
+            const button = document.getElementById('pause-resume-timer');
+            const icon = button.querySelector('i');
+            const text = button.querySelector('span');
+
+            if (!isPaused) {
+                clearInterval(timerInterval);
+                isPaused = true;
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+                text.textContent = 'Continue';
+                console.log("Paused");
+            } else {
+                startTimerSession();
+                isPaused = false;
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+                text.textContent = 'Pause';
+                console.log("Continued");
+            }
+        }
+        
+        function stopTimer() {
+            clearInterval(timerInterval);
+            
+            // Show the pieces modal
+            piecesModal.style.display = 'flex';
+        }
+        
+        function formatTime(timeInMilliseconds) {
+            let seconds = Math.floor(timeInMilliseconds / 1000);
+            let minutes = Math.floor(seconds / 60);
+            let hours = Math.floor(minutes / 60);
+            
+            seconds %= 60;
+            minutes %= 60;
+            
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+        
+        // ------------ UI Functions ------------
+        function backToWelcome() {
+            // Stop the timer
+            clearInterval(timerInterval);
+            
+            // Confirm with user before returning
+            if (confirm("Are you sure you want to return to the welcome page? Your timer will be reset.")) {
+                // Reset timer
+                elapsedTime = 0;
+                timerDisplay.textContent = "00:00:00";
+                
+                // Switch to welcome page
+                switchPage(timerPage, welcomePage);
+            }
+        }
+
+        function closeModal() {
+            startTimerSession();
+            // Just close the modal without submitting
+            piecesModal.style.display = 'none';
+        }
+
+        function submitPieces() {
+            const piecesInput = document.getElementById('pieces-count');
+            piecesCompleted = parseInt(piecesInput.value) || 0;
+            
+            showResults();
+        }
+        
+        function showResults() {
+            // Hide the modal
+            piecesModal.style.display = 'none';
+            
+            // Update the results page
+            finalTimeDisplay.textContent = formatTime(elapsedTime);
+            
+            // Show pieces count if provided
+            if (piecesCompleted > 0) {
+                piecesResult.style.display = 'block';
+                finalPiecesDisplay.textContent = piecesCompleted;
+            } else {
+                piecesResult.style.display = 'none';
+            }
+            
+            // Show email confirmation if applicable
+            if (userEmail && notificationConsent) {
+                emailConfirmation.style.display = 'block';
+                // In a real app, you would send an email here
+            } else {
+                emailConfirmation.style.display = 'none';
+            }
+            
+            // Switch to results page
+            switchPage(timerPage, resultsPage);
+        }
+        
+        function switchPage(fromPage, toPage) {
+            fromPage.classList.remove('active');
+            toPage.classList.add('active');
+        }
+        
+        function resetApp() {
+            // Reset all variables
+            clearInterval(timerInterval);
+            elapsedTime = 0;
+            userEmail = "";
+            notificationConsent = false;
+            piecesCompleted = 0;
+            
+            // Reset form fields
+            emailInput.value = "";
+            notificationConsentCheckbox.checked = false;
+            
+            // Reset displays
+            timerDisplay.textContent = "00:00:00";
+            
+            // Switch back to welcome page
+            switchPage(resultsPage, welcomePage);
+        }
+    </script>
+</body>
+</html>
