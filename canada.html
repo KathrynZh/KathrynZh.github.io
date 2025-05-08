@@ -1,0 +1,100 @@
+<<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Canada ADAUID Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { height: 100vh; }
+    #search-box {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: white;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    input[type="text"] {
+      padding: 5px;
+      width: 200px;
+    }
+    button {
+      padding: 5px 10px;
+      margin-left: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="search-box">
+    <input type="text" id="adauid-input" placeholder="请输入ADAUID">
+    <button onclick="highlightArea()">搜索</button>
+  </div>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([49.8951, -97.1384], 10);
+
+    // 替换为清爽底图：Carto Light
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let geojsonLayer;
+
+    // 搜索并高亮区域（只描边，不填充）
+    function highlightArea() {
+      const adauid = document.getElementById('adauid-input').value.trim();
+      if (!geojsonLayer) {
+        alert("地图数据尚未加载完成，请稍后再试");
+        return;
+      }
+      geojsonLayer.eachLayer(function(layer) {
+        const match = layer.feature.properties.ADAUID?.toString() === adauid;
+        layer.setStyle({
+          color: match ? 'red' : '#3388ff',
+          weight: match ? 4 : 1,
+          fillOpacity: 0, // ✅ 不填充颜色
+          opacity: 1
+        });
+        if (match) {
+          map.fitBounds(layer.getBounds());
+        }
+      });
+    }
+
+    // 支持回车键触发搜索
+    document.getElementById("adauid-input").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        highlightArea();
+      }
+    });
+
+    // 加载 GeoJSON 文件
+    fetch('selected_cities.geojson')
+      .then(response => response.json())
+      .then(data => {
+        geojsonLayer = L.geoJSON(data, {
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup("ADaUID: " + feature.properties.ADAUID);
+          },
+          style: {
+            color: '#3388ff',
+            weight: 1,
+            fillOpacity: 0,
+            opacity: 0.7
+          }
+        }).addTo(map);
+      })
+      .catch(error => console.error("GeoJSON 加载失败：", error));
+  </script>
+</body>
+</html>
