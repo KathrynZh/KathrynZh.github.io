@@ -250,7 +250,20 @@
             color: #2d1b2e;
             margin-bottom: 20px;
             text-align: center;
+            background: linear-gradient(135deg, #d63384, #e91e63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
+
+        /*.title {
+          font-size: 28px;
+          font-weight: 600;
+          color: #d63384;
+          margin-bottom: 30px;
+          background: linear-gradient(135deg, #d63384, #e91e63);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }*/
         
         .history-item {
             padding: 15px;
@@ -343,7 +356,7 @@
 <body>
     <div class="container">
         <div class="main-card">
-            <h1 class="title">💕 恋爱安全运行时间</h1>
+            <h1 class="title">💕 恋爱连续安全运行时长</h1>
             
             <!-- 主界面 -->
             <div id="main-screen">
@@ -353,19 +366,19 @@
                 
                 <div class="buttons">
                     <button class="btn btn-secondary" onclick="showResetModal()">清零</button>
-                    <button class="btn" onclick="showHistoryModal()">历史记录</button>
+                    <button class="btn" onclick="showHistoryModal()">事故记录</button>
                 </div>
             </div>
             
             <!-- 设置界面 -->
             <div id="setup-screen" class="setup-screen">
-                <div class="setup-form">
+                <form class="setup-form" onsubmit="event.preventDefault(); setInitialTime();">
                     <div class="form-group">
                         <label class="form-label">快乐时光从这里开始：</label>
-                        <input type="datetime-local" id="initial-time" class="form-input">
+                        <input type="datetime-local" id="initial-time" class="form-input" required>
                     </div>
-                    <button class="btn" onclick="setInitialTime()" style="width: 100%;">开始记录</button>
-                </div>
+                    <button type="submit" class="btn" style="width: 100%;">开始记录</button>
+                </form>
             </div>
         </div>
     </div>
@@ -373,8 +386,8 @@
     <!-- 新的清零确认弹窗 -->
     <div id="reset-modal" class="modal">
         <div class="modal-content">
-            <h3 class="modal-title">⚠️ 确认清零</h3>
-            <p class="confirm-text">确定要清零当前计时吗？当前记录将保存到历史中。</p>
+            <!--<h3 class="modal-title">‼️</h3>-->
+            <p class="confirm-text">‼️ 确定要清零当前计时吗？<br>当前记录将保存到历史中。</p>
             <div class="modal-buttons">
                 <button class="btn btn-secondary" onclick="closeModal('reset-modal')">取消</button>
                 <button class="btn" onclick="handleConfirmReset()">确认清零</button>
@@ -401,6 +414,13 @@
         document.addEventListener('DOMContentLoaded', function () {
             loadData();
             initializeApp();
+
+            // 监听输入框回车
+            //document.getElementById('initial-time').addEventListener('keydown', function(e) {
+            //    if (e.key === 'Enter') {
+            //        setInitialTime();
+            //    }
+            //});
         });
 
         function loadData() {
@@ -431,10 +451,17 @@
             if (startTime) {
                 document.getElementById('main-screen').style.display = 'block';
                 document.getElementById('setup-screen').classList.remove('active');
+
+                // 标题改为“本恋爱已安全运行”
+                document.querySelector('.title').textContent = '本恋爱已安全运行';
+
                 startTimer();
             } else {
                 document.getElementById('main-screen').style.display = 'none';
                 document.getElementById('setup-screen').classList.add('active');
+
+                // 标题恢复为原始状态
+                document.querySelector('.title').textContent = '💕 恋爱安全运行时间';
 
                 const now = new Date();
                 const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
@@ -453,11 +480,15 @@
             startTime = new Date(timeInput);
             saveData();
 
+            // 修改标题
+            document.querySelector('.title').textContent = '💗 本恋爱已安全运行';
+
             document.getElementById('setup-screen').classList.remove('active');
             document.getElementById('main-screen').style.display = 'block';
 
             startTimer();
         }
+
 
         function startTimer() {
             if (timerInterval) {
