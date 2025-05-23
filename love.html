@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本恋爱安全运行时间</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 背景装饰 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff9eb5' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .main-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /*.main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff9eb5, #ff6b9d, #ff9eb5);
+            background-size: 200% 100%;
+            animation: gradient 3s ease infinite;*/
+        }
+        
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .title {
+          font-size: 28px;
+          font-weight: 600;
+          color: #d63384;
+          margin-bottom: 30px;
+          background: linear-gradient(135deg, #d63384, #e91e63);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        /*.title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d1b2e;
+            margin-bottom: 30px;
+            position: relative;
+        }*/
+        
+        /*.title::after {
+            content: '💕';
+            position: absolute;
+            left: 80px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: heartbeat 2s ease-in-out infinite;
+        }*/
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.1); }
+        }
+        
+        .timer-display {
+            font-size: 18px;
+            color: #4a4a4a;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 182, 193, 0.1);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 182, 193, 0.2);
+        }
+        
+        .time-number {
+            font-weight: 700;
+            color: #ff6b9d;
+            font-size: 1.1em;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #ff9eb5, #ff6b9d);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #e0c3fc, #c3a6ff);
+            box-shadow: 0 4px 15px rgba(195, 166, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(195, 166, 255, 0.4);
+        }
+        
+        /* 设置界面 */
+        .setup-screen {
+            display: none;
+        }
+        
+        .setup-screen.active {
+            display: block;
+        }
+        
+        .setup-form {
+            text-align: left;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a4a4a;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 182, 193, 0.3);
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #ff9eb5;
+        }
+        
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d1b2e;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .history-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 182, 193, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid #ff9eb5;
+            position: relative;
+        }
+        
+        .history-title {
+            font-weight: 600;
+            color: #ff6b9d;
+            margin-bottom: 5px;
+        }
+        
+        .history-details {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .empty-history {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .main-card {
+                padding: 30px 20px;
+            }
+            
+            .title {
+                font-size: 20px;
+            }
+            
+            .timer-display {
+                font-size: 16px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+        
+        .confirm-text {
+            color: #666;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        /* 删除按钮样式 */
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff6b9d;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .delete-btn:hover {
+            background: #e91e63;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-card">
+            <h1 class="title">💕 恋爱安全运行时间</h1>
+            
+            <!-- 主界面 -->
+            <div id="main-screen">
+                <div class="timer-display" id="timer-display">
+                    正在加载...
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn btn-secondary" onclick="showResetModal()">清零</button>
+                    <button class="btn" onclick="showHistoryModal()">历史记录</button>
+                </div>
+            </div>
+            
+            <!-- 设置界面 -->
+            <div id="setup-screen" class="setup-screen">
+                <div class="setup-form">
+                    <div class="form-group">
+                        <label class="form-label">快乐时光从这里开始：</label>
+                        <input type="datetime-local" id="initial-time" class="form-input">
+                    </div>
+                    <button class="btn" onclick="setInitialTime()" style="width: 100%;">开始记录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 新的清零确认弹窗 -->
+    <div id="reset-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">⚠️ 确认清零</h3>
+            <p class="confirm-text">确定要清零当前计时吗？当前记录将保存到历史中。</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('reset-modal')">取消</button>
+                <button class="btn" onclick="handleConfirmReset()">确认清零</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 历史记录弹窗 -->
+    <div id="history-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">历史记录</h3>
+            <div id="history-list"></div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal('history-modal')">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let startTime = null;
+        let timerInterval = null;
+        let history = [];
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            initializeApp();
+        });
+        
+        // 从localStorage加载数据
+        function loadData() {
+            const savedStartTime = localStorage.getItem('loveTimerStart');
+            const savedHistory = localStorage.getItem('loveTimerHistory');
+            
+            if (savedStartTime) {
+                startTime = new Date(savedStartTime);
+            }
+            
+            if (savedHistory) {
+                try {
+                    history = JSON.parse(savedHistory);
+                } catch (e) {
+                    history = [];
+                }
+            }
+        }
+        
+        // 保存数据到localStorage
+        function saveData() {
+            if (startTime) {
+                localStorage.setItem('loveTimerStart', startTime.toISOString());
+            }
+            localStorage.setItem('loveTimerHistory', JSON.stringify(history));
+        }
+        
+        // 修改后的初始化函数
+        function initializeApp() {
+            if (startTime) {
+                document.getElementById('main-screen').style.display = 'block';
+                document.getElementById('setup-screen').classList.remove('active');
+                startTimer();
+            } else {
+                document.getElementById('main-screen').style.display = 'none';
+                document.getElementById('setup-screen').classList.add('active');
+                // 设置默认时间为当前时间
+                const now = new Date();
+                const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+                    .toISOString().slice(0, 16);
+                document.getElementById('initial-time').value = localDateTime;
+            }
+        }
+        
+        // 设置初始时间
+        function setInitialTime() {
+            const timeInput = document.getElementById('initial-time').value;
+            if (!timeInput) {
+                alert('请选择一个时间');
+                return;
+            }
+            
+            startTime = new Date(timeInput);
+            saveData();
+            
+            // 切换到主界面
+            document.getElementById('setup-screen').classList.remove('active');
+            document.getElementById('main-screen').style.display = 'block';
+            
+            startTimer();
+        }
+        
+        // 开始计时器
+        function startTimer() {
+            // 清除可能存在的旧计时器
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            // 立即更新一次显示
+            updateTimerDisplay();
+            
+            // 每秒更新
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+        
+        // 更新计时器显示
+        function updateTimerDisplay() {
+            if (!startTime) return;
+            
+            const now = new Date();
+            const timeDiff = now - startTime;
+            
+            if (timeDiff < 0) {
+                document.getElementById('timer-display').innerHTML = '时间设置有误，请重新设置';
+                return;
+            }
+            
+            const seconds = Math.floor(timeDiff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            
+            const displaySeconds = seconds % 60;
+            const displayMinutes = minutes % 60;
+            const displayHours = hours % 24;
+            
+            const timeText = `
+                <span class="time-number">${days}</span> 天 
+                <span class="time-number">${displayHours}</span> 小时 
+                <span class="time-number">${displayMinutes}</span> 分钟 
+                <span class="time-number">${displaySeconds}</span> 秒`;
+            
+            document.getElementById('timer-display').innerHTML = timeText;
+        }
+        
+        // 显示清零确认弹窗，移除原confirmReset函数，其他函数保持不变
+        function showResetModal() {
+            document.getElementById('reset-modal').classList.add('active');
+        }
+        
+        // 修改后的确认清零处理函数
+        function handleConfirmReset() {
+            // 保存当前记录到历史
+            if (startTime) {
+                const now = new Date();
+                const duration = now - startTime;
+                const days = Math.floor(duration / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+                
+                history.unshift({
+                    id: Date.now(),
+                    startTime: startTime.toISOString(),
+                    endTime: now.toISOString(),
+                    duration: duration,
+                    durationText: `${days}天${hours}小时${minutes}分钟`
+                });
+            }
+            
+            // 清除当前计时并保存
+            startTime = null;
+            saveData();
+            
+            // 切换到设置界面
+            closeModal('reset-modal');
+            initializeApp();
+        }
+        
+        // 显示历史记录弹窗
+        function showHistoryModal() {
+            renderHistoryList();
+            document.getElementById('history-modal').classList.add('active');
+        }
+        
+        // 删除历史记录项
+        function deleteHistoryItem(id) {
+            history = history.filter(item => item.id !== id);
+            saveData();
+            renderHistoryList();
+        }
+        
+        // 渲染历史记录列表
+        function renderHistoryList() {
+            const historyList = document.getElementById('history-list');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="empty-history">暂无历史记录</div>';
+                return;
+            }
+            
+            let html = '';
+            history.forEach((item, index) => {
+                const startDate = new Date(item.startTime);
+                const formatDate = startDate.toLocaleString('zh-CN');
+                
+                html += `
+                    <div class="history-item">
+                        <button class="delete-btn" onclick="deleteHistoryItem(${item.id})">×</button>
+                        <div class="history-title">第 ${history.length - index} 次记录</div>
+                        <div class="history-details">
+                            运行时长：${item.durationText}<br>
+                            起始时间：${formatDate}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            historyList.innerHTML = html;
+        }
+        
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // 点击弹窗外部关闭弹窗
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
+        
+        // 防止页面离开时丢失计时器
+        window.addEventListener('beforeunload', function() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        });
+        
+        // 页面重新获得焦点时确保计时器正常运行
+        window.addEventListener('focus', function() {
+            if (startTime && !timerInterval) {
+                startTimer();
+            }
+        });
+    </script>
+</body>
+</html>

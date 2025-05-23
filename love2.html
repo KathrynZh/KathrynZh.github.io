@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>本恋爱安全运行时间</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff9eb5' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      z-index: -1;
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(255, 105, 180, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: 600;
+      color: #d63384;
+      margin-bottom: 30px;
+      background: linear-gradient(135deg, #d63384, #e91e63);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .timer-display {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(214, 51, 132, 0.05);
+      border-radius: 16px;
+      border: 1px solid rgba(214, 51, 132, 0.1);
+    }
+    .btn {
+      background: linear-gradient(135deg, #d63384, #e91e63);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(214, 51, 132, 0.3);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(214, 51, 132, 0.4);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #666;
+      font-weight: 500;
+    }
+    .datetime-input {
+      width: 100%;
+      max-width: 300px;
+      padding: 12px 16px;
+      border: 2px solid #f0f0f0;
+      border-radius: 12px;
+      font-size: 16px;
+      color: #333;
+      background: rgba(255, 255, 255, 0.9);
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">💕 本恋爱安全运行时间</h1>
+
+    <div id="setup-form">
+      <div class="input-group">
+        <label for="initial-time">请设置恋爱开始时间：</label>
+        <input type="datetime-local" id="initial-time" class="datetime-input">
+      </div>
+      <button class="btn" onclick="startTracking()">开始记录</button>
+    </div>
+
+    <div id="main-screen" style="display: none;">
+      <div class="timer-display" id="timer-display">正在加载...</div>
+      <div class="buttons">
+        <button class="btn" onclick="showResetConfirm()">清零</button>
+      </div>
+    </div>
+
+    <div id="confirm-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <p>是否确认清零？</p>
+        <div class="modal-buttons">
+          <button class="btn" onclick="confirmReset()">确认</button>
+          <button class="btn" onclick="closeModal('confirm-modal')">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let startTime = null;
+    let timerInterval = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const now = new Date();
+      const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+      document.getElementById('initial-time').value = local;
+    });
+
+    function startTracking() {
+      const value = document.getElementById('initial-time').value;
+      if (!value) return alert('请选择开始时间');
+      startTime = new Date(value);
+      document.getElementById('setup-form').style.display = 'none';
+      document.getElementById('main-screen').style.display = 'block';
+      updateDisplay();
+      timerInterval = setInterval(updateDisplay, 1000);
+    }
+
+    function updateDisplay() {
+      const now = new Date();
+      const diff = now - startTime;
+      const seconds = Math.floor(diff / 1000) % 60;
+      const minutes = Math.floor(diff / (1000 * 60)) % 60;
+      const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      document.getElementById('timer-display').innerHTML = `${days}天 ${hours}小时 ${minutes}分钟 ${seconds}秒`;
+    }
+
+    function showResetConfirm() {
+      document.getElementById('confirm-modal').style.display = 'flex';
+    }
+
+    function confirmReset() {
+      document.getElementById('confirm-modal').style.display = 'none';
+      clearInterval(timerInterval);
+      startTime = null;
+      document.getElementById('main-screen').style.display = 'none';
+      document.getElementById('setup-form').style.display = 'block';
+
+      const now = new Date();
+      const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+      document.getElementById('initial-time').value = local;
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+  </script>
+</body>
+</html>
