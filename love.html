@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>本恋爱安全运行时间</title>
+    <title>恋爱安全运行记录</title>
     <style>
         * {
             margin: 0;
@@ -42,6 +42,22 @@
             z-index: 1;
         }
         
+        .milestone-message {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #d63384;
+            text-align: center;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 500px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .main-card {
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(20px);
@@ -209,6 +225,8 @@
             backdrop-filter: blur(5px);
             z-index: 1000;
             animation: fadeIn 0.3s ease;
+            opacity: 1;
+            transition: fadeOut 0.3s ease;
         }
         
         .modal.active {
@@ -216,10 +234,19 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .modal.closing {
+            animation: fadeOut 0.3s ease forwards;
         }
         
         .modal-content {
@@ -356,7 +383,7 @@
 <body>
     <div class="container">
         <div class="main-card">
-            <h1 class="title">💕 恋爱连续安全运行时长</h1>
+            <h1 class="title">💕 恋爱连续安全运行记录</h1>
             
             <!-- 主界面 -->
             <div id="main-screen">
@@ -366,10 +393,10 @@
                 
                 <div class="buttons">
                     <button class="btn btn-secondary" onclick="showResetModal()">清零</button>
-                    <button class="btn" onclick="showHistoryModal()">事故记录</button>
+                    <button class="btn" onclick="showHistoryModal()">历史记录</button>
                 </div>
             </div>
-            
+
             <!-- 设置界面 -->
             <div id="setup-screen" class="setup-screen">
                 <form class="setup-form" onsubmit="event.preventDefault(); setInitialTime();">
@@ -381,18 +408,35 @@
                 </form>
             </div>
         </div>
+        <div id="milestone-message" class="milestone-message"></div>
     </div>
-    
-    <!-- 新的清零确认弹窗 -->
+
+    <!-- 新的清零确认弹窗 
     <div id="reset-modal" class="modal">
         <div class="modal-content">
-            <!--<h3 class="modal-title">‼️</h3>-->
+            h3 class="modal-title">‼️</h3>
             <p class="confirm-text">‼️ 确定要清零当前计时吗？<br>当前记录将保存到历史中。</p>
             <div class="modal-buttons">
                 <button class="btn btn-secondary" onclick="closeModal('reset-modal')">取消</button>
-                <button class="btn" onclick="handleConfirmReset()">确认清零</button>
+                <button class="btn" onclick="handleConfirmReset()">确认</button>
             </div>
         </div>
+    </div> -->
+
+    <!-- 清零确认弹窗：填写吵架发生时间 -->
+    <div id="reset-modal" class="modal">
+      <div class="modal-content">
+        <h3 style="text-align: center;">🥺 确认清零吗？</h3>
+        <p class="confirm-text">这段时间将被好好保存，相信我们可以慢慢调整好，再重新出发。</p>
+        <div class="form-group">
+          <label class="form-label" for="quarrel-time-input">事故发生时间：</label>
+          <input type="datetime-local" id="quarrel-time-input" class="form-input">
+        </div>
+        <div class="modal-buttons">
+          <button class="btn btn-secondary" onclick="closeModal('reset-modal')">取消</button>
+          <button class="btn" onclick="handleConfirmResetWithTime()">确认</button>
+        </div>
+      </div>
     </div>
     
     <!-- 历史记录弹窗 -->
@@ -410,6 +454,7 @@
         let startTime = null;
         let timerInterval = null;
         let history = [];
+        let lastEndTime = null; // 🆕 新增：记录上次结束时间用于计算break
 
         document.addEventListener('DOMContentLoaded', function () {
             loadData();
@@ -451,17 +496,19 @@
             if (startTime) {
                 document.getElementById('main-screen').style.display = 'block';
                 document.getElementById('setup-screen').classList.remove('active');
+                document.getElementById('milestone-message').style.display = 'block'; // 👈 显示文案
 
                 // 标题改为“本恋爱已安全运行”
-                document.querySelector('.title').textContent = '本恋爱已安全运行';
+                document.querySelector('.title').textContent = '💗 本恋爱已安全运行';
 
                 startTimer();
             } else {
                 document.getElementById('main-screen').style.display = 'none';
                 document.getElementById('setup-screen').classList.add('active');
+                document.getElementById('milestone-message').style.display = 'none';
 
                 // 标题恢复为原始状态
-                document.querySelector('.title').textContent = '💕 恋爱安全运行时间';
+                document.querySelector('.title').textContent = '💕 恋爱安全运行记录';
 
                 const now = new Date();
                 const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
@@ -478,17 +525,39 @@
             }
 
             startTime = new Date(timeInput);
+
+            if (lastEndTime) {
+                const newStart = new Date(timeInput);
+                const breakDuration = newStart - lastEndTime;
+                if (breakDuration > 0) {
+                    const breakDays = Math.floor(breakDuration / (1000 * 60 * 60 * 24));
+                    const breakHours = Math.floor((breakDuration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const breakMinutes = Math.floor((breakDuration % (1000 * 60 * 60)) / (1000 * 60));
+
+                    history.unshift({
+                        id: 'break-' + Date.now(), // 方便区分
+                        isBreak: true, // 🆕 用于渲染时判断
+                        startTime: lastEndTime.toISOString(),
+                        endTime: newStart.toISOString(),
+                        duration: breakDuration,
+                        durationText: `${breakDays}天${breakHours}小时${breakMinutes}分钟`
+                    });
+                    lastEndTime = null; // 🆕 清空已使用的记录
+                }
+            }
+
             saveData();
 
-            // 修改标题
+            //修改标题
             document.querySelector('.title').textContent = '💗 本恋爱已安全运行';
 
             document.getElementById('setup-screen').classList.remove('active');
             document.getElementById('main-screen').style.display = 'block';
 
             startTimer();
+            updateTimerDisplay();
+            document.getElementById('milestone-message').style.display = 'block';
         }
-
 
         function startTimer() {
             if (timerInterval) {
@@ -526,9 +595,28 @@
                 <span class="time-number">${displaySeconds}</span> 秒`;
 
             document.getElementById('timer-display').innerHTML = timeText;
+
+            const messageEl = document.getElementById('milestone-message');
+
+            if (days >= 100) {
+                messageEl.textContent = `本恋爱已连续安全运行 ${days} 天，系统认证：超级稳定情侣 👩🏻‍❤️‍💋‍👨🏻`;
+            } else if (days >= 90) {
+                messageEl.textContent = `已经三个月啦，谢谢你和我一起坚持不争吵 🥰`;
+            } else if (days >= 60) {
+                messageEl.textContent = `已经两个月啦，谢谢你和我一起坚持不争吵 🥰`;
+            } else if (days >= 30) {
+                messageEl.textContent = `连续 ${days} 天和平运行，恋爱系统表示非常满意 ✨！`;
+            } else if (days >= 5) {
+                messageEl.textContent = `咚咚锵～恋爱小火车稳稳运行 ${days} 天咯 🚂💞`;
+            } else {
+                messageEl.textContent = ''; // 小于5天不显示
+            }
         }
 
         function showResetModal() {
+            const now = new Date();
+            const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            document.getElementById('quarrel-time-input').value = localDateTime;
             document.getElementById('reset-modal').classList.add('active');
         }
 
@@ -563,7 +651,8 @@
         }
 
         function deleteHistoryItem(id) {
-            history = history.filter(item => item.id !== id);
+            //history = history.filter(item => item.id !== id);
+            history = history.filter(item => item.id.toString() !== id.toString()); // ✅ 改为字符串比较
             saveData();
             renderHistoryList();
         }
@@ -577,7 +666,31 @@
             }
 
             let html = '';
-            history.forEach((item, index) => {
+            let safetyCount = history.filter(i => !i.isBreak).length; // 先统计总次数
+            history.forEach((item) => {
+                const startDate = new Date(item.startTime);
+                const endDate = new Date(item.endTime);
+                const formatStart = startDate.toLocaleString('zh-CN');
+                const formatEnd = endDate.toLocaleString('zh-CN');
+                const isBreak = item.isBreak;
+
+                const label = isBreak
+                    ? `🛑 第 ${safetyCount} 次事故`
+                    : `第 ${safetyCount--} 次安全记录`;
+
+                html += `
+                    <div class="history-item">
+                        <button class="delete-btn" onclick="deleteHistoryItem('${item.id}')">×</button>
+                        <div class="history-title">${label}</div>
+                        <div class="history-details">
+                            ${isBreak ? '间隔时长：' : '运行时长：'}${item.durationText}<br>
+                            ${isBreak ? '事故时间：' : '起始时间：'}${formatStart}<br>
+                            ${isBreak ? '恢复时间：' : '结束时间：'}${formatEnd}
+                        </div>
+                    </div>`;
+            });
+
+            /*history.forEach((item, index) => {
                 const startDate = new Date(item.startTime);
                 const formatDate = startDate.toLocaleString('zh-CN');
 
@@ -590,14 +703,22 @@
                             起始时间：${formatDate}
                         </div>
                     </div>`;
-            });
+            });*/
 
             historyList.innerHTML = html;
         }
 
-        function closeModal(modalId) {
+        /*function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
-        }
+        }*/
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('closing');
+            setTimeout(() => {
+            modal.classList.remove('active', 'closing');
+        }, 300); // 与 fadeOut 动画一致
+    }
 
         document.addEventListener('click', function (e) {
             if (e.target.classList.contains('modal')) {
@@ -616,6 +737,47 @@
                 startTimer();
             }
         });
+
+        function handleConfirmResetWithTime() {
+            const timeInput = document.getElementById('quarrel-time-input').value;
+            if (!timeInput) {
+              alert('请填写吵架时间');
+              return;
+            }
+
+            const customEndTime = new Date(timeInput);
+            if (!startTime) {
+              alert('开始时间不存在，请刷新页面重试');
+              return;
+            }
+
+            if (customEndTime <= startTime) {
+              alert('吵架时间必须在开始时间之后');
+              return;
+            }
+
+            const duration = customEndTime - startTime;
+            const days = Math.floor(duration / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+
+            history.unshift({
+              id: Date.now(),
+              startTime: startTime.toISOString(),
+              endTime: customEndTime.toISOString(),
+              duration: duration,
+              durationText: `${days}天${hours}小时${minutes}分钟`
+            });
+
+            lastEndTime = customEndTime; // 🆕 新增：记录上一次的结束时间
+
+            startTime = null;
+            localStorage.removeItem('loveTimerStart');
+            saveData();
+
+            closeModal('reset-modal');
+            initializeApp();
+          }
 </script>
 </body>
 </html>
