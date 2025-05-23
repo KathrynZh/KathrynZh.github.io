@@ -394,26 +394,23 @@
     </div>
 
     <script>
-        // 全局变量
         let startTime = null;
         let timerInterval = null;
         let history = [];
-        
-        // 页面加载时初始化
-        document.addEventListener('DOMContentLoaded', function() {
+
+        document.addEventListener('DOMContentLoaded', function () {
             loadData();
             initializeApp();
         });
-        
-        // 从localStorage加载数据
+
         function loadData() {
             const savedStartTime = localStorage.getItem('loveTimerStart');
             const savedHistory = localStorage.getItem('loveTimerHistory');
-            
+
             if (savedStartTime) {
                 startTime = new Date(savedStartTime);
             }
-            
+
             if (savedHistory) {
                 try {
                     history = JSON.parse(savedHistory);
@@ -422,16 +419,14 @@
                 }
             }
         }
-        
-        // 保存数据到localStorage
+
         function saveData() {
             if (startTime) {
                 localStorage.setItem('loveTimerStart', startTime.toISOString());
             }
             localStorage.setItem('loveTimerHistory', JSON.stringify(history));
         }
-        
-        // 修改后的初始化函数
+
         function initializeApp() {
             if (startTime) {
                 document.getElementById('main-screen').style.display = 'block';
@@ -440,91 +435,80 @@
             } else {
                 document.getElementById('main-screen').style.display = 'none';
                 document.getElementById('setup-screen').classList.add('active');
-                // 设置默认时间为当前时间
+
                 const now = new Date();
                 const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
                     .toISOString().slice(0, 16);
                 document.getElementById('initial-time').value = localDateTime;
             }
         }
-        
-        // 设置初始时间
+
         function setInitialTime() {
             const timeInput = document.getElementById('initial-time').value;
             if (!timeInput) {
                 alert('请选择一个时间');
                 return;
             }
-            
+
             startTime = new Date(timeInput);
             saveData();
-            
-            // 切换到主界面
+
             document.getElementById('setup-screen').classList.remove('active');
             document.getElementById('main-screen').style.display = 'block';
-            
+
             startTimer();
         }
-        
-        // 开始计时器
+
         function startTimer() {
-            // 清除可能存在的旧计时器
             if (timerInterval) {
                 clearInterval(timerInterval);
             }
-            
-            // 立即更新一次显示
+
             updateTimerDisplay();
-            
-            // 每秒更新
             timerInterval = setInterval(updateTimerDisplay, 1000);
         }
-        
-        // 更新计时器显示
+
         function updateTimerDisplay() {
             if (!startTime) return;
-            
+
             const now = new Date();
             const timeDiff = now - startTime;
-            
+
             if (timeDiff < 0) {
                 document.getElementById('timer-display').innerHTML = '时间设置有误，请重新设置';
                 return;
             }
-            
+
             const seconds = Math.floor(timeDiff / 1000);
             const minutes = Math.floor(seconds / 60);
             const hours = Math.floor(minutes / 60);
             const days = Math.floor(hours / 24);
-            
+
             const displaySeconds = seconds % 60;
             const displayMinutes = minutes % 60;
             const displayHours = hours % 24;
-            
+
             const timeText = `
                 <span class="time-number">${days}</span> 天 
                 <span class="time-number">${displayHours}</span> 小时 
                 <span class="time-number">${displayMinutes}</span> 分钟 
                 <span class="time-number">${displaySeconds}</span> 秒`;
-            
+
             document.getElementById('timer-display').innerHTML = timeText;
         }
-        
-        // 显示清零确认弹窗，移除原confirmReset函数，其他函数保持不变
+
         function showResetModal() {
             document.getElementById('reset-modal').classList.add('active');
         }
-        
-        // 修改后的确认清零处理函数
+
         function handleConfirmReset() {
-            // 保存当前记录到历史
             if (startTime) {
                 const now = new Date();
                 const duration = now - startTime;
                 const days = Math.floor(duration / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
-                
+
                 history.unshift({
                     id: Date.now(),
                     startTime: startTime.toISOString(),
@@ -533,43 +517,39 @@
                     durationText: `${days}天${hours}小时${minutes}分钟`
                 });
             }
-            
-            // 清除当前计时并保存
+
             startTime = null;
+            localStorage.removeItem('loveTimerStart'); // ✅关键修改：彻底清除 startTime
             saveData();
-            
-            // 切换到设置界面
+
             closeModal('reset-modal');
             initializeApp();
         }
-        
-        // 显示历史记录弹窗
+
         function showHistoryModal() {
             renderHistoryList();
             document.getElementById('history-modal').classList.add('active');
         }
-        
-        // 删除历史记录项
+
         function deleteHistoryItem(id) {
             history = history.filter(item => item.id !== id);
             saveData();
             renderHistoryList();
         }
-        
-        // 渲染历史记录列表
+
         function renderHistoryList() {
             const historyList = document.getElementById('history-list');
-            
+
             if (history.length === 0) {
                 historyList.innerHTML = '<div class="empty-history">暂无历史记录</div>';
                 return;
             }
-            
+
             let html = '';
             history.forEach((item, index) => {
                 const startDate = new Date(item.startTime);
                 const formatDate = startDate.toLocaleString('zh-CN');
-                
+
                 html += `
                     <div class="history-item">
                         <button class="delete-btn" onclick="deleteHistoryItem(${item.id})">×</button>
@@ -578,38 +558,33 @@
                             运行时长：${item.durationText}<br>
                             起始时间：${formatDate}
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
-            
+
             historyList.innerHTML = html;
         }
-        
-        // 关闭弹窗
+
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }
-        
-        // 点击弹窗外部关闭弹窗
-        document.addEventListener('click', function(e) {
+
+        document.addEventListener('click', function (e) {
             if (e.target.classList.contains('modal')) {
                 e.target.classList.remove('active');
             }
         });
-        
-        // 防止页面离开时丢失计时器
-        window.addEventListener('beforeunload', function() {
+
+        window.addEventListener('beforeunload', function () {
             if (timerInterval) {
                 clearInterval(timerInterval);
             }
         });
-        
-        // 页面重新获得焦点时确保计时器正常运行
-        window.addEventListener('focus', function() {
+
+        window.addEventListener('focus', function () {
             if (startTime && !timerInterval) {
                 startTimer();
             }
         });
-    </script>
+</script>
 </body>
 </html>
