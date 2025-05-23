@@ -611,6 +611,12 @@
             } else {
                 messageEl.textContent = ''; // 小于5天不显示
             }
+
+            if (messageEl.textContent === '') {
+                messageEl.style.display = 'none';
+            } else {
+                messageEl.style.display = 'block';
+            }
         }
 
         function showResetModal() {
