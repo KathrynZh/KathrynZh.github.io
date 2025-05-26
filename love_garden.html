@@ -31,8 +31,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff9eb5' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            /*background-image: url(https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-5898-61f7-bc1c-1ae67d7d45b0/raw?se=2025-05-24T00%3A02%3A54Z&sp=r&sv=2024-08-04&sr=b&scid=2215e6b0-2baa-51e4-bb98-8e62eb19b312&skoid=04233560-0ad7-493e-8bf0-1347c317d021&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-23T18%3A41%3A26Z&ske=2025-05-24T18%3A41%3A26Z&sks=b&skv=2024-08-04&sig=KWrGlizTj9YaNeOzpNiLsPTre9ZqqigyAbxPjQps4OA%3D);*/
+            /*background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff9eb5' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");*/
+            background-image: url(https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-5898-61f7-bc1c-1ae67d7d45b0/raw?se=2025-05-24T00%3A02%3A54Z&sp=r&sv=2024-08-04&sr=b&scid=2215e6b0-2baa-51e4-bb98-8e62eb19b312&skoid=04233560-0ad7-493e-8bf0-1347c317d021&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-23T18%3A41%3A26Z&ske=2025-05-24T18%3A41%3A26Z&sks=b&skv=2024-08-04&sig=KWrGlizTj9YaNeOzpNiLsPTre9ZqqigyAbxPjQps4OA%3D);
             z-index: -1;
         }
         
@@ -383,6 +383,321 @@
             background: #e91e63;
             transform: scale(1.1);
         }
+
+        /* 花园可视化区域 */
+        .garden-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(144, 238, 144, 0.1);
+            border-radius: 20px;
+            border: 2px solid rgba(144, 238, 144, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .garden-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #228B22;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .garden-canvas {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(180deg, #87CEEB 0%, #90EE90 100%);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* 花园元素样式 */
+        .garden-element {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+        
+        .grass {
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(90deg, #7CB342, #8BC34A, #9CCC65);
+            border-radius: 0 0 16px 16px;
+        }
+        
+        .flower {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            animation: sway 3s ease-in-out infinite;
+        }
+        
+        .flower.red { background: #FF6B6B; }
+        .flower.yellow { background: #FFD93D; }
+        .flower.pink { background: #FF8FAB; }
+        .flower.purple { background: #B39CD0; }
+        
+        .tree {
+            width: 30px;
+            height: 40px;
+            background: #8D6E63;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .tree::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 30px;
+            background: #4CAF50;
+            border-radius: 50%;
+        }
+        
+        .butterfly {
+            width: 12px;
+            height: 8px;
+            background: #FF9800;
+            border-radius: 50%;
+            animation: fly 4s ease-in-out infinite;
+        }
+        
+        .butterfly::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -6px;
+            width: 8px;
+            height: 6px;
+            background: #FFC107;
+            border-radius: 50%;
+        }
+        
+        .pond {
+            width: 60px;
+            height: 30px;
+            background: #64B5F6;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: ripple 2s ease-in-out infinite;
+        }
+        
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+        
+        @keyframes fly {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            25% { transform: translateY(-10px) translateX(20px); }
+            50% { transform: translateY(-5px) translateX(40px); }
+            75% { transform: translateY(-15px) translateX(20px); }
+        }
+        
+        @keyframes ripple {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.6; }
+        }
+        
+        /* 浇水功能区域 */
+        .water-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(135, 206, 235, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(135, 206, 235, 0.3);
+        }
+        
+        .water-btn {
+            background: linear-gradient(135deg, #64B5F6, #42A5F5);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .water-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(100, 181, 246, 0.4);
+        }
+        
+        .water-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .water-status {
+            font-size: 13px;
+            color: #666;
+            text-align: right;
+        }
+        
+        /* 浇水动画效果 */
+        .water-drop {
+            position: absolute;
+            width: 8px;
+            height: 12px;
+            background: #64B5F6;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            animation: waterDrop 1s ease-out forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes waterDrop {
+            0% {
+                opacity: 1;
+                transform: translateY(-20px) rotate(-45deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(50px) rotate(-45deg);
+            }
+        }
+        
+        /* 用户识别弹窗 */
+        .user-setup-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .user-setup-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-setup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 350px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .user-setup-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #228B22;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .user-option {
+            margin-bottom: 15px;
+        }
+        
+        .user-option label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a4a4a;
+            font-weight: 500;
+        }
+        
+        .existing-users {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .user-tag {
+            background: rgba(144, 238, 144, 0.2);
+            border: 1px solid rgba(144, 238, 144, 0.5);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+        
+        .user-tag:hover {
+            background: rgba(144, 238, 144, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        /* 浇水记录区域 */
+        .water-log-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            border: 1px solid rgba(144, 238, 144, 0.2);
+        }
+        
+        .water-log-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #228B22;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .water-log-item {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(144, 238, 144, 0.1);
+            font-size: 14px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .water-log-item:last-child {
+            border-bottom: none;
+        }
+        
+        .water-log-empty {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        /* 响应式适配 */
+        @media (max-width: 480px) {
+            .garden-canvas {
+                height: 150px;
+            }
+            
+            .water-section {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -396,6 +711,41 @@
                     正在加载...
                 </div>
                 
+                <div class="garden-section">
+                    <div class="garden-title">
+                        <span>🌱</span>
+                        <span id="garden-title-text">我们的小花园</span>
+                        <span>🌸</span>
+                    </div>
+                    
+                    <!-- 花园画布 -->
+                    <div class="garden-canvas" id="garden-canvas">
+                        <!-- 动态生成的花园元素将插入这里 -->
+                    </div>
+                    
+                    <!-- 浇水功能区域 -->
+                    <div class="water-section">
+                        <button class="water-btn" id="water-btn" onclick="waterGarden()">
+                            <span>💧</span>
+                            <span>浇水</span>
+                        </button>
+                        <div class="water-status" id="water-status">
+                            今日可浇水
+                        </div>
+                    </div>
+                    
+                    <!-- 浇水记录 -->
+                    <div class="water-log-section">
+                        <div class="water-log-title">
+                            <span>📝</span>
+                            <span>浇水记录</span>
+                        </div>
+                        <div id="water-log-list">
+                            <!-- 动态生成的浇水记录 -->
+                        </div>
+                    </div>
+                </div>
+
                 <div class="buttons">
                     <button class="btn btn-secondary" onclick="showResetModal()">清零</button>
                     <button class="btn" onclick="showHistoryModal()">历史记录</button>
@@ -443,6 +793,28 @@
         </div>
       </div>
     </div>
+
+    <!-- 用户识别弹窗 -->
+    <div id="user-setup-modal" class="user-setup-modal">
+        <div class="user-setup-content">
+            <h3 class="user-setup-title">🌻 欢迎来到花园</h3>
+            
+            <div class="user-option">
+                <label>请选择你的身份：</label>
+                <input type="text" id="new-nickname" class="form-input" placeholder="输入你的昵称（如：熊熊）" maxlength="10">
+                <button class="btn" onclick="setUserNickname()" style="width: 100%; margin-top: 10px;">
+                    确认昵称
+                </button>
+            </div>
+            
+            <div class="user-option" id="existing-users-section" style="display: none;">
+                <label>或选择已有用户：</label>
+                <div class="existing-users" id="existing-users">
+                    <!-- 动态生成已有用户标签 -->
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- 历史记录弹窗 -->
     <div id="history-modal" class="modal">
@@ -464,6 +836,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             loadData();
             initializeApp();
+            initGarden();
 
             // 监听输入框回车
             //document.getElementById('initial-time').addEventListener('keydown', function(e) {
@@ -604,18 +977,18 @@
             const messageEl = document.getElementById('milestone-message');
             let message = '';
 
-             if (days >= 60) {
+            if (days >= 100) {
                 message = `本恋爱已连续安全运行 ${days} 天，系统认证：超级稳定情侣 👩🏻‍❤️‍💋‍👨🏻`;
-            /*} else if (days >= 60) {
-                message = `已经两个月啦，谢谢你和我一起坚持不争吵 🥰`;*/
+            } else if (days >= 90) {
+                message = `已经三个月啦，谢谢你和我一起坚持不争吵 🥰`;
+            } else if (days >= 60) {
+                message = `已经两个月啦，谢谢你和我一起坚持不争吵 🥰`;
             } else if (days >= 30) {
-                message = `已经一个月啦，谢谢你和我一起坚持不争吵 🥰`;
-            } else if (days >= 15) {
                 message = `连续 ${days} 天和平运行，恋爱系统表示非常满意 ✨！`;
-            } else if (days >= 7) {
+            } else if (days >= 5) {
                 message = `咚咚锵～恋爱小火车稳稳运行 ${days} 天咯 🚂💞`;
             }
-            
+
             if (message) {
                 messageEl.textContent = message;
                 messageEl.classList.add('show');
@@ -790,6 +1163,348 @@
             closeModal('reset-modal');
             initializeApp();
           }
+
+          // ===== 花园数据管理 =====
+        let gardenId = null;
+        let currentUser = null;
+        let gardenData = {
+            level: 0,
+            waterCount: 0,
+            lastWaterTime: null,
+            users: [],
+            waterLog: []
+        };
+
+        // ===== 初始化花园功能 =====
+        function initGarden() {
+            // 从URL获取gardenId
+            const urlParams = new URLSearchParams(window.location.search);
+            gardenId = urlParams.get('garden');
+            
+            if (!gardenId) {
+                // 如果没有gardenId，生成一个默认的
+                gardenId = 'default_garden';
+            }
+            
+            // 加载花园数据
+            loadGardenData();
+            
+            // 检查用户身份
+            checkUserIdentity();
+            
+            // 渲染花园
+            renderGarden();
+            
+            // 更新浇水状态
+            updateWaterStatus();
+            
+            // 渲染浇水记录
+            renderWaterLog();
+        }
+
+        // ===== 数据存储管理 =====
+        function loadGardenData() {
+            const savedData = localStorage.getItem(`garden_${gardenId}`);
+            if (savedData) {
+                try {
+                    gardenData = { ...gardenData, ...JSON.parse(savedData) };
+                } catch (e) {
+                    console.error('加载花园数据失败:', e);
+                }
+            }
+            
+            // 加载当前用户
+            currentUser = localStorage.getItem(`garden_user_${gardenId}`);
+        }
+
+        function saveGardenData() {
+            localStorage.setItem(`garden_${gardenId}`, JSON.stringify(gardenData));
+            if (currentUser) {
+                localStorage.setItem(`garden_user_${gardenId}`, currentUser);
+            }
+        }
+
+        // ===== 用户身份管理 =====
+        function checkUserIdentity() {
+            if (!currentUser) {
+                showUserSetupModal();
+            } else {
+                // 确保当前用户在用户列表中
+                if (!gardenData.users.includes(currentUser)) {
+                    gardenData.users.push(currentUser);
+                    saveGardenData();
+                }
+            }
+        }
+
+        function showUserSetupModal() {
+            const modal = document.getElementById('user-setup-modal');
+            const existingSection = document.getElementById('existing-users-section');
+            const existingUsersDiv = document.getElementById('existing-users');
+            
+            // 如果有已存在的用户，显示选择区域
+            if (gardenData.users.length > 0) {
+                existingSection.style.display = 'block';
+                let html = '';
+                gardenData.users.forEach(user => {
+                    html += `<div class="user-tag" onclick="selectExistingUser('${user}')">${user}</div>`;
+                });
+                existingUsersDiv.innerHTML = html;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function setUserNickname() {
+            const nickname = document.getElementById('new-nickname').value.trim();
+            if (!nickname) {
+                alert('请输入昵称');
+                return;
+            }
+            
+            if (nickname.length > 10) {
+                alert('昵称不能超过10个字符');
+                return;
+            }
+            
+            currentUser = nickname;
+            
+            // 添加到用户列表（如果不存在）
+            if (!gardenData.users.includes(nickname)) {
+                gardenData.users.push(nickname);
+            }
+            
+            saveGardenData();
+            closeModal('user-setup-modal');
+        }
+
+        function selectExistingUser(nickname) {
+            currentUser = nickname;
+            saveGardenData();
+            closeModal('user-setup-modal');
+        }
+
+        // ===== 花园渲染系统 =====
+        function calculateGardenLevel() {
+            if (!startTime) return 0;
+            
+            const now = new Date();
+            const timeDiff = now - startTime;
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            
+            // 基础等级按天数计算
+            let level = 0;
+            if (days >= 30) level = 5;
+            else if (days >= 21) level = 4;
+            else if (days >= 11) level = 3;
+            else if (days >= 6) level = 2;
+            else if (days >= 1) level = 1;
+            
+            // 浇水次数可以提升等级
+            const waterBonus = Math.floor(gardenData.waterCount / 5);
+            level = Math.min(5, level + waterBonus);
+            
+            return level;
+        }
+
+        function renderGarden() {
+            const canvas = document.getElementById('garden-canvas');
+            const level = calculateGardenLevel();
+            
+            // 清空画布
+            canvas.innerHTML = '';
+            
+            // 添加基础草地
+            const grass = document.createElement('div');
+            grass.className = 'garden-element grass';
+            canvas.appendChild(grass);
+            
+            // 根据等级添加元素
+            renderGardenByLevel(canvas, level);
+            
+            // 更新标题
+            updateGardenTitle(level);
+        }
+
+        function renderGardenByLevel(canvas, level) {
+            const elements = [];
+            
+            switch(level) {
+                case 5: // 30+ 天：完整繁茂花园
+                    elements.push(
+                        { type: 'pond', left: '20%', bottom: '40px' },
+                        { type: 'tree', left: '70%', bottom: '30px' },
+                        { type: 'butterfly', left: '60%', bottom: '80px' },
+                        { type: 'butterfly', left: '30%', bottom: '90px' }
+                    );
+                case 4: // 21-30 天：蝴蝶、小池塘
+                    elements.push(
+                        { type: 'flower pink', left: '15%', bottom: '35px' },
+                        { type: 'flower purple', left: '85%', bottom: '35px' },
+                        { type: 'butterfly', left: '50%', bottom: '70px' }
+                    );
+                case 3: // 11-20 天：小灌木、颜色丰富
+                    elements.push(
+                        { type: 'flower red', left: '25%', bottom: '35px' },
+                        { type: 'flower yellow', left: '65%', bottom: '35px' },
+                        { type: 'tree', left: '45%', bottom: '30px' }
+                    );
+                case 2: // 6-10 天：几株野花
+                    elements.push(
+                        { type: 'flower red', left: '40%', bottom: '35px' },
+                        { type: 'flower yellow', left: '60%', bottom: '35px' }
+                    );
+                case 1: // 1-5 天：荒地、少许野草
+                    elements.push(
+                        { type: 'flower pink', left: '30%', bottom: '35px' }
+                    );
+                    break;
+                case 0: // 0 天：完全荒地
+                default:
+                    // 只有草地，不添加其他元素
+                    break;
+            }
+            
+            // 渲染所有元素
+            elements.forEach(el => {
+                const element = document.createElement('div');
+                element.className = `garden-element ${el.type}`;
+                element.style.left = el.left;
+                element.style.bottom = el.bottom;
+                canvas.appendChild(element);
+            });
+        }
+
+        function updateGardenTitle(level) {
+            const titleEl = document.getElementById('garden-title-text');
+            const titles = [
+                '等待播种的土地', // level 0
+                '初生的小花园', // level 1
+                '温馨的花园', // level 2
+                '美丽的花园', // level 3
+                '梦幻花园', // level 4
+                '爱的伊甸园' // level 5
+            ];
+            titleEl.textContent = titles[level] || titles[0];
+        }
+
+        // ===== 浇水功能 =====
+        function waterGarden() {
+            if (!currentUser) {
+                showUserSetupModal();
+                return;
+            }
+            
+            // 检查今日是否已浇水
+            const today = new Date().toDateString();
+            const lastWater = gardenData.lastWaterTime ? new Date(gardenData.lastWaterTime).toDateString() : null;
+            
+            if (lastWater === today) {
+                alert('今天已经浇过水了哦～明天再来吧！');
+                return;
+            }
+            
+            // 执行浇水
+            gardenData.waterCount++;
+            gardenData.lastWaterTime = new Date().toISOString();
+            
+            // 添加浇水记录
+            gardenData.waterLog.unshift({
+                id: Date.now(),
+                user: currentUser,
+                time: new Date().toISOString(),
+                type: 'water'
+            });
+            
+            // 限制记录数量（最多保存50条）
+            if (gardenData.waterLog.length > 50) {
+                gardenData.waterLog = gardenData.waterLog.slice(0, 50);
+            }
+            
+            saveGardenData();
+            
+            // 播放浇水动画
+            playWaterAnimation();
+            
+            // 更新显示
+            renderGarden();
+            updateWaterStatus();
+            renderWaterLog();
+        }
+
+        function playWaterAnimation() {
+            const canvas = document.getElementById('garden-canvas');
+            const dropCount = 8;
+            
+            for (let i = 0; i < dropCount; i++) {
+                setTimeout(() => {
+                    const drop = document.createElement('div');
+                    drop.className = 'water-drop';
+                    drop.style.left = Math.random() * 80 + 10 + '%';
+                    drop.style.top = '20px';
+                    canvas.appendChild(drop);
+                    
+                    // 1秒后移除水滴
+                    setTimeout(() => {
+                        if (drop.parentNode) {
+                            drop.parentNode.removeChild(drop);
+                        }
+                    }, 1000);
+                }, i * 100);
+            }
+        }
+
+        function updateWaterStatus() {
+            const btn = document.getElementById('water-btn');
+            const status = document.getElementById('water-status');
+            const today = new Date().toDateString();
+            const lastWater = gardenData.lastWaterTime ? new Date(gardenData.lastWaterTime).toDateString() : null;
+            
+            if (lastWater === today) {
+                btn.disabled = true;
+                status.textContent = '今日已浇水 ✅';
+            } else {
+                btn.disabled = false;
+                status.textContent = '今日可浇水 💧';
+            }
+        }
+
+        function renderWaterLog() {
+            const logList = document.getElementById('water-log-list');
+            
+            if (gardenData.waterLog.length === 0) {
+                logList.innerHTML = '<div class="water-log-empty">还没有浇水记录呢～</div>';
+                return;
+            }
+            
+            let html = '';
+            gardenData.waterLog.slice(0, 10).forEach(log => { // 只显示最近10条
+                const date = new Date(log.time);
+                const dateStr = date.toLocaleDateString('zh-CN');
+                const timeStr = date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                
+                html += `
+                    <div class="water-log-item">
+                        <span>💧</span>
+                        <span>${dateStr} ${timeStr}</span>
+                        <span>${log.user} 给花园浇了水</span>
+                        <span>🌸</span>
+                    </div>
+                `;
+            });
+            
+            logList.innerHTML = html;
+        }
+
+        // ===== 修改现有的初始化函数 =====
+        // 在现有的 document.addEventListener('DOMContentLoaded', ...) 中添加：
+        /*
+        document.addEventListener('DOMContentLoaded', function () {
+            loadData();
+            initializeApp();
+            initGarden(); // 🌱 新增这行
+        });
+        */
 </script>
 </body>
 </html>
