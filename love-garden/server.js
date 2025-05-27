@@ -4,6 +4,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
+let history = []; // 全局变量
 app.use(cors());
 app.use(express.json());
 
@@ -18,8 +19,17 @@ app.get('/start-time', (req, res) => {
   res.json({ startTime: data.startTime });
 });
 
+app.get('/history', (req, res) => {
+  res.json({ history });
+});
+
 app.post('/start-time', (req, res) => {
   const { startTime } = req.body;
+
+app.post('/history', (req, res) => {
+  history = req.body.history;
+  res.json({ message: 'History saved' });
+});
 
   // 如果传的是 null，表示清零
   if (startTime === null) {
