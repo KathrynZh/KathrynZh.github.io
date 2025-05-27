@@ -388,12 +388,14 @@
 <body>
     <div class="container">
         <div class="main-card">
-            <h1 class="title">💕 恋爱连续安全运行记录</h1>
+            <!--<h1 class="title">💕 恋爱连续安全运行记录</h1>-->
+            <h1 class="title" id="page-title" style="visibility: hidden;">&nbsp;</h1>
+
             
             <!-- 主界面 -->
             <div id="main-screen">
                 <div class="timer-display" id="timer-display">
-                    正在加载...
+                    加载中...
                 </div>
                 
                 <div class="buttons">
@@ -432,7 +434,7 @@
     <div id="reset-modal" class="modal">
       <div class="modal-content">
         <h3 style="text-align: center;">🥺 确认清零吗？</h3>
-        <p class="confirm-text">这段时间将被好好保存，相信我们可以慢慢调整好，再重新出发。</p>
+        <p class="confirm-text">这段时间将被好好保存在历史记录，相信我们可以慢慢调整好，再重新出发。</p>
         <div class="form-group">
           <label class="form-label" for="quarrel-time-input">事故发生时间：</label>
           <input type="datetime-local" id="quarrel-time-input" class="form-input">
@@ -549,27 +551,29 @@
         }
 
         function initializeApp() {
+            const title = document.getElementById('page-title');
+
             if (startTime) {
                 document.getElementById('main-screen').style.display = 'block';
                 document.getElementById('setup-screen').classList.remove('active');
-                document.getElementById('milestone-message').style.display = 'block'; // 👈 显示文案
-
-                // 标题改为“本恋爱已安全运行”
-                document.querySelector('.title').textContent = '💗 本恋爱已安全运行';
+                
+                title.textContent = '💗 本恋爱已安全运行';
+                title.style.visibility = 'visible';
+                title.style.opacity = 1;
 
                 startTimer();
             } else {
                 document.getElementById('main-screen').style.display = 'none';
                 document.getElementById('setup-screen').classList.add('active');
-                document.getElementById('milestone-message').style.display = 'none';
-
-                // 标题恢复为原始状态
-                document.querySelector('.title').textContent = '💕 恋爱安全运行记录';
 
                 const now = new Date();
                 const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-                    .toISOString().slice(0, 16);
+                  .toISOString().slice(0, 16);
                 document.getElementById('initial-time').value = localDateTime;
+
+                title.textContent = '💕 恋爱安全运行记录';
+                title.style.visibility = 'visible';
+                title.style.opacity = 1;
             }
         }
 
@@ -701,6 +705,7 @@
             }
 
             startTime = null;
+            clearServerStartTime();
             localStorage.removeItem('loveTimerStart'); // ✅关键修改：彻底清除 startTime
             saveData();
 

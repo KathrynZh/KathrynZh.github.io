@@ -20,9 +20,18 @@ app.get('/start-time', (req, res) => {
 
 app.post('/start-time', (req, res) => {
   const { startTime } = req.body;
+
+  // 如果传的是 null，表示清零
+  if (startTime === null) {
+    fs.writeFileSync(FILE_PATH, JSON.stringify({ startTime: null }));
+    return res.json({ success: true, message: 'Start time cleared.' });
+  }
+
+  // 否则就是正常写入时间
   fs.writeFileSync(FILE_PATH, JSON.stringify({ startTime }));
   res.json({ success: true });
 });
+
 
 app.listen(port, () => {
   console.log(`✅ Server running on port ${port}`);
