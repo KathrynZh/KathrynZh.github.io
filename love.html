@@ -433,7 +433,7 @@
     <!-- 清零确认弹窗：填写吵架发生时间 -->
     <div id="reset-modal" class="modal">
       <div class="modal-content">
-        <h3 style="text-align: center;">🥺 确认清零吗？</h3>
+        <h3 style="text-align: center;">🥺&nbsp;&nbsp;&nbsp;确认清零吗？🥺</h3>
         <p class="confirm-text">这段时间将被好好保存在历史记录，相信我们可以慢慢调整好，再重新出发。</p>
         <div class="form-group">
           <label class="form-label" for="quarrel-time-input">事故发生时间：</label>
@@ -500,9 +500,20 @@
         }*/
 
         document.addEventListener('DOMContentLoaded', async function() {
+            document.getElementById('page-title').style.visibility = 'hidden';
+
             await loadData();          // 等待数据加载完毕
             initializeApp();           // 再初始化界面
         });
+
+        /*document.addEventListener('DOMContentLoaded', async function() {
+            document.getElementById('main-screen').style.display = 'none';
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('page-title').style.visibility = 'hidden';
+
+            await loadData();         // 等后端数据加载完成
+            initializeApp();          // 再决定展示哪个界面
+        });*/
 
         // 加载共享开始时间
         async function loadData() {
@@ -809,7 +820,7 @@
         function handleConfirmResetWithTime() {
             const timeInput = document.getElementById('quarrel-time-input').value;
             if (!timeInput) {
-              alert('请填写吵架时间');
+              alert('请填写事故时间');
               return;
             }
 
@@ -820,7 +831,7 @@
             }
 
             if (customEndTime <= startTime) {
-              alert('吵架时间必须在开始时间之后');
+              alert('事故时间必须在开始时间之后');
               return;
             }
 
