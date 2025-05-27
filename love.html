@@ -342,6 +342,11 @@
             body {
                 background: linear-gradient(180deg, #fff5fa 0%, #ffe4ee 100%);
             }
+
+            body::before {
+                background: none; /* ✅ 清除小圆点图案背景 */
+            }
+            
               .main-card {
                 margin: 0 10px;
                 padding: 30px 20px;
