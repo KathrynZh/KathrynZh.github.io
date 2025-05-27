@@ -461,7 +461,7 @@
         let history = [];
         let lastEndTime = null; // 🆕 新增：记录上次结束时间用于计算break
 
-        document.addEventListener('DOMContentLoaded', function () {
+        /*document.addEventListener('DOMContentLoaded', function () {
             loadData();
             initializeApp();
 
@@ -471,7 +471,7 @@
             //        setInitialTime();
             //    }
             //});
-        });
+        });*/
 
         /*function loadData() {
             const savedStartTime = localStorage.getItem('loveTimerStart');
@@ -490,13 +490,17 @@
             }
         }
 
-
         function saveData() {
             if (startTime) {
                 localStorage.setItem('loveTimerStart', startTime.toISOString());
             }
             localStorage.setItem('loveTimerHistory', JSON.stringify(history));
         }*/
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadData();          // 等待数据加载完毕
+            initializeApp();           // 再初始化界面
+        });
 
         // 加载共享开始时间
         async function loadData() {
