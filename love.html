@@ -13,7 +13,9 @@
         
         body {
             font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%);
+            /*background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%);*/
+            background: linear-gradient(180deg, #fff0f5 0%, #ffeef8 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -22,7 +24,7 @@
             position: relative;
             overflow-x: hidden;
         }
-        
+  
         /* 背景装饰 */
         body::before {
             content: '';
@@ -31,8 +33,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff9eb5' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            /*background-image: url(https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-5898-61f7-bc1c-1ae67d7d45b0/raw?se=2025-05-24T00%3A02%3A54Z&sp=r&sv=2024-08-04&sr=b&scid=2215e6b0-2baa-51e4-bb98-8e62eb19b312&skoid=04233560-0ad7-493e-8bf0-1347c317d021&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-23T18%3A41%3A26Z&ske=2025-05-24T18%3A41%3A26Z&sks=b&skv=2024-08-04&sig=KWrGlizTj9YaNeOzpNiLsPTre9ZqqigyAbxPjQps4OA%3D);*/
+            /*background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff9eb5' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");*/
+            background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ff9eb5' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 1; /* 原来可能太低了 */
             z-index: -1;
         }
         
@@ -64,13 +67,16 @@
         }
 
         .main-card {
-            background: rgba(255, 255, 255, 0.9);
+            /*background: rgba(255, 255, 255, 0.9);*/
+            background: white;
             backdrop-filter: blur(20px);
             border-radius: 24px;
             padding: 40px 30px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            /*box-shadow: 0 20px 40px rgba(255, 105, 180, 0.1);*/
+            box-shadow: 0 8px 30px rgba(255, 105, 180, 0.2);
+            /*border: 1px solid rgba(255, 255, 255, 0.3);*/
+            border: 1px solid rgba(255, 182, 193, 0.3);
             position: relative;
             overflow: hidden;
         }
@@ -333,9 +339,19 @@
         
         /* 响应式设计 */
         @media (max-width: 480px) {
-            .main-card {
-                padding: 30px 20px;
+            body {
+                background: linear-gradient(180deg, #fff5fa 0%, #ffe4ee 100%);
             }
+              .main-card {
+                margin: 0 10px;
+                padding: 30px 20px;
+                border-radius: 20px;
+                box-shadow: 0 6px 20px rgba(255, 105, 180, 0.15);
+            }
+
+            /*.main-card {
+                padding: 30px 20px;
+            }*/
             
             .title {
                 font-size: 20px;
