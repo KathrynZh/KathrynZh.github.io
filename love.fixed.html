@@ -588,9 +588,9 @@
           saveHistoryToServer();
         }
 
-        async function saveHistoryToServer() {
+        /*async function saveHistoryToServer() {
           try {
-            await fetch('https://love-garden.onrender.com/history', {
+            await fetch('https://love-garden-backend-production.up.railway.app/history', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ history })
@@ -598,8 +598,24 @@
           } catch (err) {
             console.error('保存历史记录失败', err);
           }
-        }
+        }*/
 
+        async function saveHistoryToServer() {
+          if (!history.length) return;
+
+          try {
+            await fetch('https://love-garden-backend-production.up.railway.app/history', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ history }) // ✅ 只发最新的一条
+            });
+          } catch (err) {
+            console.error('保存历史记录失败', err);
+          }
+        }
+        
         function initializeApp() {
             const title = document.getElementById('page-title');
 
