@@ -580,11 +580,18 @@
         }
 
         // 重写保存逻辑
-        function saveData() {
+        /*function saveData() {
           if (startTime) {
             saveStartTimeToServer(); // 保存到服务器
           }
           //localStorage.setItem('loveTimerHistory', JSON.stringify(history));
+          saveHistoryToServer();
+        }*/
+
+        function saveData({ skipServer = false } = {}) {
+          if (startTime && !skipServer) {
+            saveStartTimeToServer();
+          }
           saveHistoryToServer();
         }
 
@@ -656,7 +663,9 @@
                 }
             }
 
-            saveData();
+            saveStartTimeToServer(); // 🔁 写入服务器
+            //saveData();
+            saveData({ skipServer: true }); // ✅ 避免重复写入
 
             //修改标题
             document.querySelector('.title').textContent = '💗 本恋爱已安全运行';
