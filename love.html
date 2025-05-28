@@ -421,19 +421,28 @@
           color: #555575;
         }
 
-        body.heartbroken-mode .btn {
+        /*body.heartbroken-mode .btn {
           background: linear-gradient(135deg, #8a8dbb, #6a6ea9);
           box-shadow: 0 4px 15px rgba(100, 100, 150, 0.3);
         }
 
         body.heartbroken-mode .btn:hover {
           box-shadow: 0 8px 25px rgba(100, 100, 150, 0.4);
-        }
+        }*/
 
-        body.heartbroken-mode .btn-secondary {
+        /*body.heartbroken-mode .btn-secondary {
           background: linear-gradient(135deg, #a2a5d0, #888bb2);
           box-shadow: 0 4px 15px rgba(130, 130, 180, 0.3);
         }
+
+        /*body.heartbroken-mode .btn.btn-secondary {
+          background: linear-gradient(135deg, #ff9eb5, #ff6b9d);
+          box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+        }*/
+
+        /*body.heartbroken-mode .btn.btn-secondary:hover {
+          box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }*/
 
         body.heartbroken-mode .time-number {
           color: #50557a;
@@ -455,7 +464,8 @@
                 </div>
                 
                 <div class="buttons">
-                    <button class="btn btn-secondary" onclick="showResetModal()">清零</button>
+                    <!--<button class="btn btn-secondary" onclick="showResetModal()">清零</button>-->
+                    <button class="btn btn-secondary" id="main-left-button"></button>
                     <button class="btn" onclick="showHistoryModal()">历史记录</button>
                 </div>
             </div>
@@ -512,6 +522,22 @@
             </div>
         </div>
     </div>
+
+    <!-- 重新开始确认弹窗 -->
+    <div id="restart-modal" class="modal">
+      <div class="modal-content">
+        <h3 style="text-align: center;">🌈 重新开始</h3>
+        <p class="confirm-text">
+          恭喜你们走出了这段风雨！<br>
+          点击“重新开始”，我们将开启新的旅程。
+        </p>
+        <div class="modal-buttons">
+          <button class="btn btn-secondary" onclick="closeModal('restart-modal')">取消</button>
+          <button class="btn" onclick="confirmRestart()">重新开始</button>
+        </div>
+      </div>
+    </div>
+
 
     <script>
         let startTime = null;
@@ -721,6 +747,27 @@
                 title.style.visibility = 'visible';
                 title.style.opacity = 1;
             }
+            updateMainButtons();
+        }
+
+        /*function updateMainButtons() {
+          const leftBtn = document.querySelector('.btn.btn-secondary');
+          if (document.body.classList.contains('heartbroken-mode')) {
+            leftBtn.textContent = '重新开始';
+            leftBtn.onclick = showRestartModal;
+          } else {
+            leftBtn.textContent = '清零';
+            leftBtn.onclick = showResetModal;
+          }
+        }*/
+        function updateMainButtons() {
+          const leftBtn = document.getElementById('main-left-button');
+          if (!leftBtn) return;
+
+          const isHeartbroken = document.body.classList.contains('heartbroken-mode');
+
+          leftBtn.textContent = isHeartbroken ? '重新开始' : '清零';
+          leftBtn.onclick = isHeartbroken ? showRestartModal : showResetModal;
         }
 
         function setInitialTime() {
@@ -928,6 +975,42 @@
             historyList.innerHTML = html;
         }
 
+        function showRestartModal() {
+          document.getElementById('restart-modal').classList.add('active');
+        }
+
+        function confirmRestart() {
+          // 清除 heartbroken 模式
+          document.body.classList.remove('heartbroken-mode');
+
+          // 切换标题
+          const titleEl = document.querySelector('.title');
+          titleEl.textContent = '💕 恋爱安全运行记录';
+          titleEl.style.background = 'linear-gradient(135deg, #d63384, #e91e63)';
+          titleEl.style.webkitBackgroundClip = 'text';
+          titleEl.style.webkitTextFillColor = 'transparent';
+
+          // 清除旧计时器
+          if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+          }
+
+          startTime = null;
+          localStorage.removeItem('loveTimerStart');
+          document.getElementById('main-screen').style.display = 'none';
+          document.getElementById('setup-screen').classList.add('active');
+
+          const now = new Date();
+          const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+            .toISOString().slice(0, 16);
+          document.getElementById('initial-time').value = localDateTime;
+
+          closeModal('restart-modal');
+
+          updateMainButtons();
+        }
+
         /*function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }*/
@@ -1016,6 +1099,8 @@
 
             // 切换页面为“heartbroken-mode”配色风格
             document.body.classList.add('heartbroken-mode');
+
+            updateMainButtons();
           }
 </script>
 </body>
