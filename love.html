@@ -404,6 +404,41 @@
             background: #e91e63;
             transform: scale(1.1);
         }
+
+        body.heartbroken-mode {
+          background: linear-gradient(180deg, #f5f6fa 0%, #e5e5f7 100%);
+        }
+
+        body.heartbroken-mode .main-card {
+          background: #f6f5fb;
+          border: 1px solid rgba(130, 130, 180, 0.2);
+          box-shadow: 0 8px 24px rgba(100, 100, 150, 0.15);
+        }
+
+        body.heartbroken-mode .timer-display {
+          background: rgba(130, 130, 180, 0.1);
+          border: 1px solid rgba(130, 130, 180, 0.2);
+          color: #555575;
+        }
+
+        body.heartbroken-mode .btn {
+          background: linear-gradient(135deg, #8a8dbb, #6a6ea9);
+          box-shadow: 0 4px 15px rgba(100, 100, 150, 0.3);
+        }
+
+        body.heartbroken-mode .btn:hover {
+          box-shadow: 0 8px 25px rgba(100, 100, 150, 0.4);
+        }
+
+        body.heartbroken-mode .btn-secondary {
+          background: linear-gradient(135deg, #a2a5d0, #888bb2);
+          box-shadow: 0 4px 15px rgba(130, 130, 180, 0.3);
+        }
+
+        body.heartbroken-mode .time-number {
+          color: #50557a;
+        }
+
     </style>
 </head>
 <body>
@@ -971,13 +1006,16 @@
             // 修改标题文字和样式为“事故模式”
             const titleEl = document.querySelector('.title');
             titleEl.textContent = '💔 本次事故已持续';
-            titleEl.style.background = 'linear-gradient(135deg, #6a4c93, #9e768f)';
+            /*titleEl.style.background = 'linear-gradient(135deg, #6a4c93, #9e768f)';*/
+            titleEl.style.background = 'linear-gradient(135deg, #6a6ea9, #8a8dbb)';
             titleEl.style.webkitBackgroundClip = 'text';
             titleEl.style.webkitTextFillColor = 'transparent';
 
-// 启动计时器
-startTimer();
+            // 启动计时器
+            startTimer();
 
+            // 切换页面为“heartbroken-mode”配色风格
+            document.body.classList.add('heartbroken-mode');
           }
 </script>
 </body>
