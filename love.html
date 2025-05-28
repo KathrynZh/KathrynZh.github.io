@@ -956,13 +956,28 @@
 
             lastEndTime = customEndTime; // 🆕 新增：记录上一次的结束时间
 
-            startTime = null;
-            await clearServerStartTime(); // ✅ 等待服务器清除完成再继续
+            await clearServerStartTime();
             localStorage.removeItem('loveTimerStart');
             saveData();
 
+            // 使用事故发生时间作为新的 startTime（为了让计时器继续计算事故持续时长）
+            startTime = customEndTime;
             closeModal('reset-modal');
-            initializeApp();
+
+            // 切换 UI：不再回到设置界面，而是展示事故计时器
+            document.getElementById('setup-screen').classList.remove('active');
+            document.getElementById('main-screen').style.display = 'block';
+
+            // 修改标题文字和样式为“事故模式”
+            const titleEl = document.querySelector('.title');
+            titleEl.textContent = '💔 本次事故已持续';
+            titleEl.style.background = 'linear-gradient(135deg, #6a4c93, #9e768f)';
+            titleEl.style.webkitBackgroundClip = 'text';
+            titleEl.style.webkitTextFillColor = 'transparent';
+
+// 启动计时器
+startTimer();
+
           }
 </script>
 </body>
