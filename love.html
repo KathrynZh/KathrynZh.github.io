@@ -1059,6 +1059,14 @@
               return;
             }
 
+            const now = new Date();
+
+            // ❗若填写时间比当前时间快超过1分钟（60,000ms）
+            if (customEndTime - now > 60000) {
+              alert('事故时间不能在未来，请重新填写');
+              return;
+            }
+
             const duration = customEndTime - startTime;
             const days = Math.floor(duration / (1000 * 60 * 60 * 24));
             const hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
