@@ -500,7 +500,7 @@
     <div id="reset-modal" class="modal">
       <div class="modal-content">
         <h3 style="text-align: center;">🥺&nbsp;&nbsp;&nbsp;确认清零吗？🥺</h3>
-        <p class="confirm-text">这段时间将被好好保存在历史记录，相信我们可以慢慢调整好，再重新出发。</p>
+        <p class="confirm-text">这段时间将被好好保存在历史记录，相信你们可以慢慢调整好，再重新出发。</p>
         <div class="form-group">
           <label class="form-label" for="quarrel-time-input">事故发生时间：</label>
           <input type="datetime-local" id="quarrel-time-input" class="form-input">
@@ -523,17 +523,17 @@
         </div>
     </div>
 
-    <!-- 重新开始确认弹窗 -->
+    <!-- 重新出发确认弹窗 -->
     <div id="restart-modal" class="modal">
       <div class="modal-content">
-        <h3 style="text-align: center;">🌈 重新开始</h3>
+        <h3 style="text-align: center;">🎉 故障解除！🎉</h3>
         <p class="confirm-text">
           恭喜你们走出了这段风雨！<br>
-          点击“重新开始”，我们将开启新的旅程。
+          准备好重新开始了吗？让我们一起踏上新的旅程吧！
         </p>
         <div class="modal-buttons">
           <button class="btn btn-secondary" onclick="closeModal('restart-modal')">取消</button>
-          <button class="btn" onclick="confirmRestart()">重新开始</button>
+          <button class="btn" onclick="confirmRestart()">重新出发</button>
         </div>
       </div>
     </div>
@@ -753,7 +753,7 @@
         /*function updateMainButtons() {
           const leftBtn = document.querySelector('.btn.btn-secondary');
           if (document.body.classList.contains('heartbroken-mode')) {
-            leftBtn.textContent = '重新开始';
+            leftBtn.textContent = '重新出发';
             leftBtn.onclick = showRestartModal;
           } else {
             leftBtn.textContent = '清零';
@@ -766,7 +766,7 @@
 
           const isHeartbroken = document.body.classList.contains('heartbroken-mode');
 
-          leftBtn.textContent = isHeartbroken ? '重新开始' : '清零';
+          leftBtn.textContent = isHeartbroken ? '重新出发' : '清零';
           leftBtn.onclick = isHeartbroken ? showRestartModal : showResetModal;
         }
 
