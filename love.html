@@ -642,9 +642,20 @@
             const data = await res.json();
             if (data.startTime) {
               startTime = new Date(data.startTime);
+
+              if (data.isHeartbroken) {
+                document.body.classList.add('heartbroken-mode');
+
+                const titleEl = document.querySelector('.title');
+                titleEl.textContent = '💔 本次事故已持续';
+                titleEl.style.background = 'linear-gradient(135deg, #6a6ea9, #8a8dbb)';
+                titleEl.style.webkitBackgroundClip = 'text';
+                titleEl.style.webkitTextFillColor = 'transparent';
+              }
             } else {
               startTime = null;
             }
+
           } catch (e) {
             console.error('加载 start-time 出错', e);
             startTime = null;
@@ -664,11 +675,14 @@
         async function saveStartTimeToServer() {
           try {
             await fetch(`${BASE_URL}/start-time`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ startTime: startTime.toISOString() })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    startTime: startTime.toISOString(),
+                    isHeartbroken: document.body.classList.contains('heartbroken-mode')
+                })
             });
           } catch (err) {
             console.error('保存服务器时间失败', err);
