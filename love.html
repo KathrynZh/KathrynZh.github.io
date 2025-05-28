@@ -151,7 +151,7 @@
             display: flex;
             gap: 15px;
             justify-content: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
         }
         
         .btn {
@@ -367,11 +367,11 @@
             }
             
             .buttons {
-                flex-direction: column;
+                flex-direction: row;
             }
             
             .btn {
-                width: 100%;
+                /*width: 100%;*/
             }
         }
         
@@ -548,13 +548,13 @@
         // 加载共享开始时间
         async function loadData() {
           try {
-            const response = await fetch('${BASE_URL}/start-time');
+            const response = await fetch(`${BASE_URL}/start-time`);
             const data = await response.json();
             if (data.startTime) {
               startTime = new Date(data.startTime);
             }
 
-            const historyResponse = await fetch('${BASE_URL}/history');
+            const historyResponse = await fetch(`${BASE_URL}/history`);
             const historyData = await historyResponse.json();
             if (historyData.history) {
               history = historyData.history;
@@ -567,7 +567,7 @@
         // 保存共享开始时间
         async function saveStartTimeToServer() {
           try {
-            await fetch('${BASE_URL}/start-time', {
+            await fetch(`${BASE_URL}/start-time`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -595,12 +595,28 @@
           saveHistoryToServer();
         }
 
-        async function saveHistoryToServer() {
+        /*async function saveHistoryToServer() {
           try {
             await fetch('${BASE_URL}/history', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ history })
+            });
+          } catch (err) {
+            console.error('保存历史记录失败', err);
+          }
+        }*/
+
+        async function saveHistoryToServer() {
+          if (!history.length) return;
+
+          try {
+            await fetch(`${BASE_URL}/history`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ history }) // ✅ 只发最新的一条
             });
           } catch (err) {
             console.error('保存历史记录失败', err);
@@ -631,6 +647,9 @@
                 title.textContent = '💕 恋爱安全运行记录';
                 title.style.visibility = 'visible';
                 title.style.opacity = 1;
+
+                milestoneEl.textContent = '';
+                milestoneEl.classList.remove('show');
             }
         }
 
@@ -663,9 +682,9 @@
                 }
             }
 
-            saveStartTimeToServer(); // 🔁 写入服务器
-            //saveData();
-            saveData({ skipServer: true }); // ✅ 避免重复写入
+            //saveStartTimeToServer(); // 🔁 写入服务器
+            saveData();
+            //saveData({ skipServer: true }); // ✅ 避免重复写入
 
             //修改标题
             document.querySelector('.title').textContent = '💗 本恋爱已安全运行';
