@@ -1,3 +1,5 @@
 {
-  "startTime": null
+  "startTime": null,
+  "isHeartbroken": false,
+  "history": []
 }
