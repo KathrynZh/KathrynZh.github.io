@@ -543,24 +543,59 @@
           }
         }*/
 
+        async function clearServerStartTime() {
+          try {
+            await fetch(`${BASE_URL}/start-time`, {
+              method: 'DELETE'
+            });
+          } catch (err) {
+            console.error('清除服务器时间失败', err);
+          }
+        }
+
         const BASE_URL = 'https://love-garden-backend-production.up.railway.app';
 
         // 加载共享开始时间
-        async function loadData() {
+        /*async function loadData() {
           try {
             const response = await fetch(`${BASE_URL}/start-time`);
             const data = await response.json();
             if (data.startTime) {
-              startTime = new Date(data.startTime);
-            }
+                startTime = new Date(data.startTime);
+            } else {
+                startTime = null;
 
             const historyResponse = await fetch(`${BASE_URL}/history`);
             const historyData = await historyResponse.json();
             if (historyData.history) {
-              history = historyData.history;
+                history = historyData.history;
             }
           } catch (err) {
-            console.error('加载服务器数据失败', err);
+                console.error('加载服务器数据失败', err);
+          }
+        }*/
+
+        async function loadData() {
+          try {
+            const res = await fetch(`${BASE_URL}/start-time`);
+            const data = await res.json();
+            if (data.startTime) {
+              startTime = new Date(data.startTime);
+            } else {
+              startTime = null;
+            }
+          } catch (e) {
+            console.error('加载 start-time 出错', e);
+            startTime = null;
+          }
+
+          try {
+            const historyRes = await fetch(`${BASE_URL}/history`);
+            const historyData = await historyRes.json();
+            history = Array.isArray(historyData.history) ? historyData.history : [];
+          } catch (e) {
+            console.error('加载 history 出错', e);
+            history = [];
           }
         }
 
@@ -608,7 +643,7 @@
         }*/
 
         async function saveHistoryToServer() {
-          if (!history.length) return;
+          //if (!history.length) return;
 
           try {
             await fetch(`${BASE_URL}/history`, {
@@ -616,7 +651,7 @@
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify({ history }) // ✅ 只发最新的一条
+              body: JSON.stringify({ history }) // 👈 不论是否为空都传
             });
           } catch (err) {
             console.error('保存历史记录失败', err);
@@ -638,6 +673,9 @@
             } else {
                 document.getElementById('main-screen').style.display = 'none';
                 document.getElementById('setup-screen').classList.add('active');
+                document.getElementById('timer-display').innerHTML = ''; // 清除加载中
+                document.getElementById('milestone-message').textContent = '';
+                document.getElementById('milestone-message').classList.remove('show');
 
                 const now = new Date();
                 const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
@@ -647,9 +685,6 @@
                 title.textContent = '💕 恋爱安全运行记录';
                 title.style.visibility = 'visible';
                 title.style.opacity = 1;
-
-                milestoneEl.textContent = '';
-                milestoneEl.classList.remove('show');
             }
         }
 
@@ -765,7 +800,7 @@
             document.getElementById('reset-modal').classList.add('active');
         }
 
-        function handleConfirmReset() {
+        async function handleConfirmReset() {
             if (startTime) {
                 const now = new Date();
                 const duration = now - startTime;
@@ -783,12 +818,16 @@
             }
 
             startTime = null;
-            clearServerStartTime();
+            await clearServerStartTime(); // ✅ 等待服务器清除完成再继续
             localStorage.removeItem('loveTimerStart'); // ✅关键修改：彻底清除 startTime
             saveData();
 
             closeModal('reset-modal');
             initializeApp();
+
+            // ✅ 清除 milestone message
+            document.getElementById('milestone-message').textContent = '';
+            document.getElementById('milestone-message').classList.remove('show');
         }
 
         function showHistoryModal() {
@@ -884,7 +923,7 @@
             }
         });
 
-        function handleConfirmResetWithTime() {
+        async function handleConfirmResetWithTime() {
             const timeInput = document.getElementById('quarrel-time-input').value;
             if (!timeInput) {
               alert('请填写事故时间');
@@ -918,6 +957,7 @@
             lastEndTime = customEndTime; // 🆕 新增：记录上一次的结束时间
 
             startTime = null;
+            await clearServerStartTime(); // ✅ 等待服务器清除完成再继续
             localStorage.removeItem('loveTimerStart');
             saveData();
 
