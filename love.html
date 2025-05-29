@@ -1026,17 +1026,10 @@
           document.getElementById('restart-modal').classList.add('active');
         }
 
-        function confirmRestart() {
+        async function confirmRestart() {
           // 清除 heartbroken 模式
           document.body.classList.remove('heartbroken-mode');
           document.documentElement.classList.remove('heartbroken-mode'); // ✅ 也移除 <html> 上的
-          
-          // 切换标题
-          const titleEl = document.querySelector('.title');
-          titleEl.textContent = '💕 恋爱安全运行记录';
-          titleEl.style.background = 'linear-gradient(135deg, #d63384, #e91e63)';
-          titleEl.style.webkitBackgroundClip = 'text';
-          titleEl.style.webkitTextFillColor = 'transparent';
 
           // 清除旧计时器
           if (timerInterval) {
@@ -1046,6 +1039,10 @@
 
           startTime = null;
           localStorage.removeItem('loveTimerStart');
+
+          // ✅ 告诉服务器也清空 startTime 和 isHeartbroken
+          await clearServerStartTime();
+
           document.getElementById('main-screen').style.display = 'none';
           document.getElementById('setup-screen').classList.add('active');
 
@@ -1054,8 +1051,14 @@
             .toISOString().slice(0, 16);
           document.getElementById('initial-time').value = localDateTime;
 
-          closeModal('restart-modal');
+          // 切换标题
+          const titleEl = document.querySelector('.title');
+          titleEl.textContent = '💕 恋爱安全运行记录';
+          titleEl.style.background = 'linear-gradient(135deg, #d63384, #e91e63)';
+          titleEl.style.webkitBackgroundClip = 'text';
+          titleEl.style.webkitTextFillColor = 'transparent';
 
+          closeModal('restart-modal');
           updateMainButtons();
         }
 
