@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <script>
+      // ⚠️ 这个同步脚本必须放在 <head> 最前，才能避免视觉闪烁
+      (() => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://love-garden-backend-production.up.railway.app/start-time', false); // 同步请求
+        xhr.send(null);
+
+        if (xhr.status === 200) {
+          try {
+            const res = JSON.parse(xhr.responseText);
+            if (res.isHeartbroken === true) {
+              document.documentElement.classList.add('heartbroken-mode'); // 提前注入 class
+            }
+          } catch (e) {
+            console.warn('无法解析服务器状态');
+          }
+        }
+      })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>恋爱安全运行记录</title>
@@ -405,46 +424,46 @@
             transform: scale(1.1);
         }
 
-        body.heartbroken-mode {
+        .heartbroken-mode body {
           background: linear-gradient(180deg, #f5f6fa 0%, #e5e5f7 100%);
         }
 
-        body.heartbroken-mode .main-card {
+        .heartbroken-mode body .main-card {
           background: #f6f5fb;
           border: 1px solid rgba(130, 130, 180, 0.2);
           box-shadow: 0 8px 24px rgba(100, 100, 150, 0.15);
         }
 
-        body.heartbroken-mode .timer-display {
+        .heartbroken-mode body .timer-display {
           background: rgba(130, 130, 180, 0.1);
           border: 1px solid rgba(130, 130, 180, 0.2);
           color: #555575;
         }
 
-        /*body.heartbroken-mode .btn {
+        /*.heartbroken-mode body .btn {
           background: linear-gradient(135deg, #8a8dbb, #6a6ea9);
           box-shadow: 0 4px 15px rgba(100, 100, 150, 0.3);
         }
 
-        body.heartbroken-mode .btn:hover {
+        .heartbroken-mode body .btn:hover {
           box-shadow: 0 8px 25px rgba(100, 100, 150, 0.4);
         }*/
 
-        /*body.heartbroken-mode .btn-secondary {
+        /*.heartbroken-mode body .btn-secondary {
           background: linear-gradient(135deg, #a2a5d0, #888bb2);
           box-shadow: 0 4px 15px rgba(130, 130, 180, 0.3);
         }
 
-        /*body.heartbroken-mode .btn.btn-secondary {
+        /*.heartbroken-mode body .btn.btn-secondary {
           background: linear-gradient(135deg, #ff9eb5, #ff6b9d);
           box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
         }*/
 
-        /*body.heartbroken-mode .btn.btn-secondary:hover {
+        /*.heartbroken-mode body .btn.btn-secondary:hover {
           box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
         }*/
 
-        body.heartbroken-mode .time-number {
+        .heartbroken-mode body .time-number {
           color: #50557a;
         }
 
@@ -1010,7 +1029,8 @@
         function confirmRestart() {
           // 清除 heartbroken 模式
           document.body.classList.remove('heartbroken-mode');
-
+          document.documentElement.classList.remove('heartbroken-mode'); // ✅ 也移除 <html> 上的
+          
           // 切换标题
           const titleEl = document.querySelector('.title');
           titleEl.textContent = '💕 恋爱安全运行记录';
