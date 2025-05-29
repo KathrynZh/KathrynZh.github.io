@@ -735,14 +735,28 @@
 
         function initializeApp() {
             const title = document.getElementById('page-title');
+            const isHeartbroken = document.body.classList.contains('heartbroken-mode'); // ✅ 通过 class 判断
 
             if (startTime) {
                 document.getElementById('main-screen').style.display = 'block';
                 document.getElementById('setup-screen').classList.remove('active');
+
+                // ✅ 根据模式动态设置标题
+                if (isHeartbroken) {
+                  title.textContent = '💔 本次事故已持续';
+                  title.style.background = 'linear-gradient(135deg, #6a6ea9, #8a8dbb)';
+                } else {
+                  title.textContent = '💗 本恋爱已安全运行';
+                  title.style.background = 'linear-gradient(135deg, #d63384, #e91e63)';
+                }
                 
-                title.textContent = '💗 本恋爱已安全运行';
                 title.style.visibility = 'visible';
-                title.style.opacity = 1;
+                title.style.webkitBackgroundClip = 'text';
+                title.style.webkitTextFillColor = 'transparent';
+
+                /*title.textContent = '💗 本恋爱已安全运行';
+                title.style.visibility = 'visible';
+                title.style.opacity = 1;*/
 
                 startTimer();
             } else {
@@ -1098,7 +1112,7 @@
 
             await clearServerStartTime();
             localStorage.removeItem('loveTimerStart');
-            saveData();
+            //saveData();
 
             // 使用事故发生时间作为新的 startTime（为了让计时器继续计算事故持续时长）
             startTime = customEndTime;
@@ -1122,6 +1136,7 @@
             // 切换页面为“heartbroken-mode”配色风格
             document.body.classList.add('heartbroken-mode');
 
+            saveData();
             updateMainButtons();
           }
 </script>
