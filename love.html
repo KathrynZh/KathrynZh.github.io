@@ -467,6 +467,26 @@
           color: #50557a;
         }
 
+        #dev-init-btn {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: rgba(0, 0, 0, 0.05);
+          border: 1px solid #aaa;
+          color: #555;
+          font-size: 12px;
+          padding: 6px 10px;
+          border-radius: 6px;
+          cursor: pointer;
+          z-index: 9999;
+          transition: opacity 0.3s ease;
+        }
+
+        #dev-init-btn:hover {
+          background: #eee;
+        }
+
+
     </style>
 </head>
 <body>
@@ -1174,6 +1194,48 @@
             saveData();
             updateMainButtons();
           }
+
+          async function injectDefaultTestData() {
+              // 清除旧数据
+              localStorage.clear();
+              await fetch(`${BASE_URL}/start-time`, { method: 'DELETE' });
+
+              const defaultSafeStart = new Date('2025-05-01T00:00:00');
+              const defaultSafeEnd = new Date('2025-05-04T04:00:00');
+              const defaultBreakStart = defaultSafeEnd;
+              const defaultBreakEnd = new Date('2025-05-17T14:19:00');
+              const defaultNow = defaultBreakEnd;
+
+              const safeDuration = defaultSafeEnd - defaultSafeStart;
+              const breakDuration = defaultBreakEnd - defaultBreakStart;
+
+              history = [
+                {
+                  id: 'break-1',
+                  isBreak: true,
+                  startTime: defaultBreakStart.toISOString(),
+                  endTime: defaultBreakEnd.toISOString(),
+                  duration: breakDuration,
+                  durationText: '13天10小时19分钟'
+                },
+                {
+                  id: 'safe-1',
+                  isBreak: false,
+                  startTime: defaultSafeStart.toISOString(),
+                  endTime: defaultSafeEnd.toISOString(),
+                  duration: safeDuration,
+                  durationText: '3天4小时0分钟'
+                }
+              ];
+
+              startTime = defaultNow;
+
+              await saveStartTimeToServer();
+              await saveHistoryToServer();
+              initializeApp();
+            }
+
 </script>
+<button id="dev-init-btn" onclick="injectDefaultTestData()">🛠</button>
 </body>
 </html>
