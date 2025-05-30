@@ -663,8 +663,7 @@
               startTime = new Date(data.startTime);
 
               if (data.isHeartbroken) {
-                document.body.classList.add('heartbroken-mode');
-                document.documentElement.classList.add('heartbroken-mode'); // ✅ 加在 <html> 上
+                document.documentElement.classList.add('heartbroken-mode');
 
                 const titleEl = document.querySelector('.title');
                 titleEl.textContent = '💔 本次事故已持续';
@@ -701,7 +700,7 @@
                 },
                 body: JSON.stringify({
                     startTime: startTime.toISOString(),
-                    isHeartbroken: document.body.classList.contains('heartbroken-mode')
+                    isHeartbroken: document.documentElement.classList.contains('heartbroken-mode')
                 })
             });
           } catch (err) {
@@ -755,9 +754,7 @@
 
         function initializeApp() {
             const title = document.getElementById('page-title');
-            const isHeartbroken =
-                document.body.classList.contains('heartbroken-mode') ||
-                document.documentElement.classList.contains('heartbroken-mode');
+            const isHeartbroken = document.documentElement.classList.contains('heartbroken-mode');
 
             if (startTime) {
                 document.getElementById('main-screen').style.display = 'block';
@@ -767,9 +764,6 @@
                 if (isHeartbroken) {
                   title.textContent = '💔 本次事故已持续';
                   title.style.background = 'linear-gradient(135deg, #6a6ea9, #8a8dbb)';
-                  // ✅ 补充：加上缺失的样式 class
-                  document.body.classList.add('heartbroken-mode');
-                  document.documentElement.classList.add('heartbroken-mode');
                 } else {
                   title.textContent = '💗 本恋爱已安全运行';
                   title.style.background = 'linear-gradient(135deg, #d63384, #e91e63)';
@@ -817,16 +811,14 @@
           const leftBtn = document.getElementById('main-left-button');
           if (!leftBtn) return;
 
-          // ✅ 同时检查 html 和 body 上是否有 heartbroken-mode
-        const isHeartbroken =
-            document.body.classList.contains('heartbroken-mode') ||
-            document.documentElement.classList.contains('heartbroken-mode');
+          const isHeartbroken = document.documentElement.classList.contains('heartbroken-mode');
 
           leftBtn.textContent = isHeartbroken ? '重新出发' : '清零';
           leftBtn.onclick = isHeartbroken ? showRestartModal : showResetModal;
         }
 
         function setInitialTime() {
+            document.getElementById('milestone-message').classList.remove('show');
             const timeInput = document.getElementById('initial-time').value;
             if (!timeInput) {
                 alert('请选择一个时间');
@@ -908,18 +900,28 @@
             document.getElementById('timer-display').innerHTML = timeText;
 
             const messageEl = document.getElementById('milestone-message');
+            const isHeartbroken = document.documentElement.classList.contains('heartbroken-mode');
             let message = '';
 
-             if (days >= 60) {
-                message = `本恋爱已连续安全运行 ${days} 天，系统认证：超级稳定情侣 👩🏻‍❤️‍💋‍👨🏻`;
-            /*} else if (days >= 60) {
-                message = `已经两个月啦，谢谢你和我一起坚持不争吵 🥰`;*/
-            } else if (days >= 30) {
-                message = `已经一个月啦，谢谢你和我一起坚持不争吵 🥰`;
-            } else if (days >= 15) {
-                message = `连续 ${days} 天和平运行，恋爱系统表示非常满意 ✨！`;
-            } else if (days >= 7) {
-                message = `咚咚锵～恋爱小火车稳稳运行 ${days} 天咯 🚂💞`;
+            if (!isHeartbroken) {
+                if (days >= 60) {
+                    message = `本恋爱已连续安全运行 ${days} 天，系统认证：超级稳定情侣 👩🏻‍❤️‍💋‍👨🏻`;
+                } else if (days >= 30) {
+                    message = `已经一个月啦，谢谢你和我一起坚持不争吵 🥰`;
+                } else if (days >= 15) {
+                    message = `连续 ${days} 天和平运行，恋爱系统表示非常满意 ✨！`;
+                } else if (days >= 7) {
+                    message = `咚咚锵～恋爱小火车稳稳运行 ${days} 天咯 🚂💞`;
+                }
+            } else {
+                // 事故模式下可显示不同提示
+                if (days >= 3) {
+                    message = `咕咚！本次事故已经 ${days} 天啦，再拖下去系统可能要发警告信咯 📮💢`;
+                } else if (days > 0) {
+                    message = `24小时过去啦，感情暂停中……要不要试着按下"继续播放"? ⏯️💕`;
+                } else if (hours > 12) {
+                    message = `叮——事故持续超过 12 小时，恋爱频道暂时中断 📴`;
+                }
             }
             
             if (message) {
@@ -1039,6 +1041,7 @@
           // 清除 heartbroken 模式
           document.body.classList.remove('heartbroken-mode');
           document.documentElement.classList.remove('heartbroken-mode'); // ✅ 也移除 <html> 上的
+            document.getElementById('milestone-message').classList.remove('show');
 
           // 清除旧计时器
           if (timerInterval) {
@@ -1102,72 +1105,75 @@
         });
 
         async function handleConfirmResetWithTime() {
-          const timeInput = document.getElementById('quarrel-time-input').value;
-          if (!timeInput) {
-            alert('请填写事故时间');
-            return;
-          }
+            const timeInput = document.getElementById('quarrel-time-input').value;
+            if (!timeInput) {
+              alert('请填写事故时间');
+              return;
+            }
 
-          const customEndTime = new Date(timeInput);
-          if (!startTime) {
-            alert('开始时间不存在，请刷新页面重试');
-            return;
-          }
+            const customEndTime = new Date(timeInput);
+            if (!startTime) {
+              alert('开始时间不存在，请刷新页面重试');
+              return;
+            }
 
-          if (customEndTime <= startTime) {
-            alert('事故时间必须在开始时间之后');
-            return;
-          }
+            if (customEndTime <= startTime) {
+              alert('事故时间必须在开始时间之后');
+              return;
+            }
 
-          const now = new Date();
+            const now = new Date();
 
-          if (customEndTime - now > 1) {
-            alert('事故时间不能在未来，请重新填写');
-            return;
-          }
+            // ❗若填写时间比当前时间快超过1分钟（60,000ms）
+            if (customEndTime - now > 60000) {
+              alert('事故时间不能在未来，请重新填写');
+              return;
+            }
 
-          const duration = customEndTime - startTime;
-          const days = Math.floor(duration / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+            const duration = customEndTime - startTime;
+            const days = Math.floor(duration / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
 
-          history.unshift({
-            id: Date.now(),
-            startTime: startTime.toISOString(),
-            endTime: customEndTime.toISOString(),
-            duration: duration,
-            durationText: `${days}天${hours}小时${minutes}分钟`
-          });
+            history.unshift({
+              id: Date.now(),
+              startTime: startTime.toISOString(),
+              endTime: customEndTime.toISOString(),
+              duration: duration,
+              durationText: `${days}天${hours}小时${minutes}分钟`
+            });
 
-          lastEndTime = customEndTime;
+            lastEndTime = customEndTime; // 🆕 新增：记录上一次的结束时间
 
-          await clearServerStartTime();
-          localStorage.removeItem('loveTimerStart');
+            await clearServerStartTime();
+            localStorage.removeItem('loveTimerStart');
+            //saveData();
 
-          startTime = customEndTime;
-          closeModal('reset-modal');
+            // 使用事故发生时间作为新的 startTime（为了让计时器继续计算事故持续时长）
+            startTime = customEndTime;
+            closeModal('reset-modal');
 
-          document.getElementById('setup-screen').classList.remove('active');
-          document.getElementById('main-screen').style.display = 'block';
+            // 切换 UI：不再回到设置界面，而是展示事故计时器
+            document.getElementById('setup-screen').classList.remove('active');
+            document.getElementById('main-screen').style.display = 'block';
 
-          const titleEl = document.querySelector('.title');
-          titleEl.textContent = '💔 本次事故已持续';
-          titleEl.style.background = 'linear-gradient(135deg, #6a6ea9, #8a8dbb)';
-          titleEl.style.webkitBackgroundClip = 'text';
-          titleEl.style.webkitTextFillColor = 'transparent';
+            // 修改标题文字和样式为“事故模式”
+            const titleEl = document.querySelector('.title');
+            titleEl.textContent = '💔 本次事故已持续';
+            /*titleEl.style.background = 'linear-gradient(135deg, #6a4c93, #9e768f)';*/
+            titleEl.style.background = 'linear-gradient(135deg, #6a6ea9, #8a8dbb)';
+            titleEl.style.webkitBackgroundClip = 'text';
+            titleEl.style.webkitTextFillColor = 'transparent';
 
-          startTimer();
+            // 启动计时器
+            startTimer();
 
-          // ✅ 最关键修复：延迟一帧后同时添加到 html + body 上，确保样式立即生效
-          requestAnimationFrame(() => {
-            document.body.classList.add('heartbroken-mode');
-            document.documentElement.classList.add('heartbroken-mode');
+            // 切换页面为“heartbroken-mode”配色风格
+            document.documentElement.classList.add('heartbroken-mode'); // 添加到html元素
+
+            saveData();
             updateMainButtons();
-          });
-
-          saveData();
-        }
-
+          }
 </script>
 </body>
 </html>
