@@ -167,16 +167,14 @@
         }
         
         .buttons {
-            display: flex;
             /*display: flex;*/
             gap: 15px;
             justify-content: center;
-            flex-wrap: nowrap;
-            /*flex-wrap: wrap;*/
+            flex-wrap: wrap;
         }
         
         .btn {
-            /*width: 100%;*/
+            width: 100%;
             background: linear-gradient(135deg, #ff9eb5, #ff6b9d);
             color: white;
             border: none;
@@ -389,13 +387,11 @@
             }
             
             .buttons {
-                flex-direction: row;
-                /*flex-direction: column;*/
+                flex-direction: column;
             }
             
             .btn {
                 /*width: 100%;*/
-                width: 100%;
             }
         }
         
@@ -491,7 +487,7 @@
           background: #eee;
         }
 
-        /*.history-text-button-wrapper {
+        .history-text-button-wrapper {
           margin-top: 8px;
           text-align: center;
         }
@@ -499,7 +495,7 @@
         .text-button {
           background: none;
           border: none;
-          color: #e97e9a;
+          color: #e97e9a; /* 原“历史记录”粉色 */
           font-size: 14px;
           margin-top: 4px;
           cursor: pointer;
@@ -511,7 +507,7 @@
         .text-button:hover {
           text-decoration: none;
           opacity: 0.8;
-        }*/
+        }
 
     </style>
 </head>
@@ -531,10 +527,10 @@
                 <div class="buttons">
                     <!--<button class="btn btn-secondary" onclick="showResetModal()">清零</button>-->
                     <button class="btn btn-secondary" id="main-left-button"></button>
-                    <button class="btn" onclick="showHistoryModal()">历史记录</button>
-                    <!-- <div class="history-text-button-wrapper">
+                    <!--<button class="btn" onclick="showHistoryModal()">历史记录</button>-->
+                    <div class="history-text-button-wrapper">
                       <button id="history-text-button" class="text-button" onclick="showHistoryModal()">历史记录</button>
-                    </div> -->
+                    </div>
                 </div>
             </div>
 
@@ -953,9 +949,7 @@
             let message = '';
 
             if (!isHeartbroken) {
-                if (days >= 100) {
-                    message = `这么快就 ${days} 天啦，你们进步很快噢！朝着下一个100天出发吧！`;
-                } else if (days >= 60) {
+                if (days >= 60) {
                     message = `本恋爱已连续安全运行 ${days} 天，系统认证：超级稳定情侣 👩🏻‍❤️‍💋‍👨🏻`;
                 } else if (days >= 30) {
                     message = `已经一个月啦，谢谢你们一起坚持不争吵 🥰`;
@@ -967,7 +961,7 @@
             } else {
                 // 事故模式下可显示不同提示
                 if (days >= 3) {
-                    message = `哎呀！本次事故已经 ${days} 天啦，再拖下去系统可要发警告信咯 📮💢`;
+                    message = `咕咚！本次事故已经 ${days} 天啦，再拖下去系统可能要发警告信咯 📮💢`;
                 } else if (days > 0) {
                     message = `24小时过去啦，感情暂停中……要不要试着按下"继续播放"? ⏯️💕`;
                 } else if (hours > 12) {
@@ -1231,78 +1225,45 @@
               localStorage.clear();
               await fetch(`${BASE_URL}/start-time`, { method: 'DELETE' });
 
-              // 用于格式化 durationText
-              function formatDuration(ms) {
-                const totalMinutes = Math.floor(ms / (1000 * 60));
-                const days = Math.floor(totalMinutes / (60 * 24));
-                const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-                const minutes = totalMinutes % 60;
-                return `${days}天${hours}小时${minutes}分钟`;
-              }
+              const defaultSafeStart = new Date('2025-05-01T00:00:00');
+              const defaultSafeEnd = new Date('2025-05-04T04:00:00');
+              const defaultBreakStart = defaultSafeEnd;
+              const defaultBreakEnd = new Date('2025-05-17T14:19:00');
+              const defaultNow = defaultBreakEnd;
 
-                const defaultSafeStart1 = new Date('2025-05-01T00:00:00');
-                const defaultSafeEnd1 = new Date('2025-05-04T04:00:00');
-                const defaultSafeStart2 = new Date('2025-05-17T14:19:00');
-                const defaultSafeEnd2 = new Date('2025-07-19T03:02:00');
+              const safeDuration = defaultSafeEnd - defaultSafeStart;
+              const breakDuration = defaultBreakEnd - defaultBreakStart;
 
-                const defaultBreakStart1 = defaultSafeEnd1;
-                const defaultBreakEnd1 = defaultSafeStart2;
-                const defaultBreakStart2 = defaultSafeEnd2;
-                const defaultBreakEnd2 = new Date('2025-07-25T13:27:00');
+              history = [
+                {
+                  id: 'break-1',
+                  isBreak: true,
+                  startTime: defaultBreakStart.toISOString(),
+                  endTime: defaultBreakEnd.toISOString(),
+                  duration: breakDuration,
+                  durationText: '13天10小时19分钟'
+                },
+                {
+                  id: 'safe-1',
+                  isBreak: false,
+                  startTime: defaultSafeStart.toISOString(),
+                  endTime: defaultSafeEnd.toISOString(),
+                  duration: safeDuration,
+                  durationText: '3天4小时0分钟'
+                }
+              ];
 
-                const defaultNow = defaultBreakEnd2;
+              startTime = defaultNow;
 
-                const safeDuration1 = defaultSafeEnd1 - defaultSafeStart1;
-                const safeDuration2 = defaultSafeEnd2 - defaultSafeStart2;
-                const breakDuration1 = defaultBreakEnd1 - defaultBreakStart1;
-                const breakDuration2 = defaultBreakEnd2 - defaultBreakStart2;
-
-                const history = [
-                  {
-                    id: 'break-2',
-                    isBreak: true,
-                    startTime: defaultBreakStart2.toISOString(),
-                    endTime: defaultBreakEnd2.toISOString(),
-                    duration: breakDuration2,
-                    durationText: formatDuration(breakDuration2),
-                  },
-                  {
-                    id: 'safe-2',
-                    isBreak: false,
-                    startTime: defaultSafeStart2.toISOString(),
-                    endTime: defaultSafeEnd2.toISOString(),
-                    duration: safeDuration2,
-                    durationText: formatDuration(safeDuration2),
-                  },
-                  {
-                    id: 'break-1',
-                    isBreak: true,
-                    startTime: defaultBreakStart1.toISOString(),
-                    endTime: defaultBreakEnd1.toISOString(),
-                    duration: breakDuration1,
-                    durationText: formatDuration(breakDuration1),
-                  },
-                  {
-                    id: 'safe-1',
-                    isBreak: false,
-                    startTime: defaultSafeStart1.toISOString(),
-                    endTime: defaultSafeEnd1.toISOString(),
-                    duration: safeDuration1,
-                    durationText: formatDuration(safeDuration1),
-                  }
-                ];
-
-                const startTime = defaultNow;
-
-                await saveStartTimeToServer(startTime);
-                await saveHistoryToServer(history);
+              await saveStartTimeToServer();
+              await saveHistoryToServer();
 
               // ✅ 新增：强制写入 isHeartbroken: false
               await fetch(`${BASE_URL}/start-time`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  startTime: '2025-07-25T17:27:00.000Z',
+                  startTime: '2025-05-17T18:19:00.000Z',
                   isHeartbroken: false
                 })
               });
