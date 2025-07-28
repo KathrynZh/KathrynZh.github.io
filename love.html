@@ -410,7 +410,8 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background: #ff6b9d;
+            background: #f5b7cc;
+            /*opacity: 0.5;*/
             color: white;
             border: none;
             width: 24px;
@@ -425,7 +426,8 @@
         }
         
         .delete-btn:hover {
-            background: #e91e63;
+            /*background: #e91e63;*/
+            background: #ff6b9d;
             transform: scale(1.1);
         }
 
@@ -1257,7 +1259,7 @@
                 const breakDuration1 = defaultBreakEnd1 - defaultBreakStart1;
                 const breakDuration2 = defaultBreakEnd2 - defaultBreakStart2;
 
-                const history = [
+                const testHistory = [
                   {
                     id: 'break-2',
                     isBreak: true,
@@ -1293,9 +1295,10 @@
                 ];
 
                 const startTime = defaultNow;
+                history = testHistory;  // ✅ 覆盖全局变量
 
                 await saveStartTimeToServer(startTime);
-                await saveHistoryToServer(history);
+                await saveHistoryToServer();   // ✅ 调用时将使用最新数据
 
               // ✅ 新增：强制写入 isHeartbroken: false
               await fetch(`${BASE_URL}/start-time`, {
