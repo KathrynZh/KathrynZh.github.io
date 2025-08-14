@@ -20,7 +20,7 @@
     .main-content { padding: 22px; }
     .control-panel { background: #f8f9ff; border-radius: 15px; padding: 18px; margin-bottom: 18px; border: 1px solid #e0e7ff; }
     .control-row { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
-    .input-group { display: flex; align-items: center; gap: 10px; }
+    .input-group { display: flex; align-items: center; justify-content: center; gap: 10px; }
     .input-group label { font-weight: 600; color: #374151; white-space: nowrap; }
     .input-field { padding: 8px 12px; border: 2px solid #d1d5db; border-radius: 10px; font-size: 1rem; transition: border-color 0.3s ease; }
     .input-field:focus { outline: none; border-color: #4f46e5; }
@@ -38,8 +38,8 @@
     .section-title { text-align: center; font-weight: bold; margin-bottom: 8px; color: #374151; font-size: 1rem; }
     .server-name { text-align: center; font-size: 0.9rem; color: #6b7280; margin-bottom: 8px; font-style: italic; }
 
-    .tables { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 8px; }
-    .table { aspect-ratio: 1; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease; position: relative; border: 2px solid transparent; width: 60px; }
+    .tables { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; }
+    .table { aspect-ratio: 1; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease; position: relative; border: 2px solid transparent; width: 70px; }
     .table:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
     .table.ready { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
     .table.seated { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
@@ -141,10 +141,15 @@
     // ====== 餐厅配置：区域、section 与 server 归属 ======
     const restaurantConfig = {
       front: {
-        section1: { tables: [1, 29, 2, 26, 3, 23], server: null },
-        section2: { tables: [4, 28, 5, 25, 6, 22], server: null },
-        section3: { tables: [7, 27, 8, 24, 9, 21], server: null },
+        section1: { tables: [1, 2, 3, 23, 26, 29], server: null },
+        section2: { tables: [4, 5, 6, 22, 25, 28], server: null },
+        section3: { tables: [7, 8, 9, 21, 24, 27], server: null },
       },
+      // front: {
+      //   section1: { tables: [1, 29, 2, 26, 3, 23], server: null },
+      //   section2: { tables: [4, 28, 5, 25, 6, 22], server: null },
+      //   section3: { tables: [7, 27, 8, 24, 9, 21], server: null },
+      // },
       back: {
         section1: { tables: [51, 52, 53], server: null },
         section2: { tables: [41, 42, 43], server: null },
