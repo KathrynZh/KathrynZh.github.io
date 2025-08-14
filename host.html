@@ -28,7 +28,8 @@
     .recommend-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); }
     .recommendation { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 14px; border-radius: 12px; text-align: center; font-size: 1rem; font-weight: 600; color: #92400e; border: 2px solid #f59e0b; margin-top: 10px; }
 
-    .areas { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-top: 18px; }
+    /*.areas { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-top: 18px; }*/
+    .areas { display: flow; gap: 18px; margin-top: 18px; }
     .area { background: white; border-radius: 15px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); border: 2px solid #e5e7eb; }
     .area h3 { text-align: center; margin-bottom: 12px; padding: 10px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border-radius: 10px; font-size: 1.1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
 
@@ -39,7 +40,7 @@
     .server-name { text-align: center; font-size: 0.9rem; color: #6b7280; margin-bottom: 8px; font-style: italic; }
 
     .tables { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; }
-    .table { aspect-ratio: 1; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease; position: relative; border: 2px solid transparent; width: 70px; }
+    .table { aspect-ratio: 1; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease; position: relative; border: 2px solid transparent; }
     .table:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
     .table.ready { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
     .table.seated { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
@@ -72,7 +73,7 @@
       .server-input { width: 100px }
       .server-setup { flex-direction: column; }
       .server-input { width: 100%; max-width: 300px; }
-      .table { flex-direction: row; }
+      .table { flex-direction: row; width: 70px; display: flex; min-width: 70px; }
     }
   </style>
 </head>
@@ -92,10 +93,10 @@
     <div class="main-content">
       <div class="control-panel">
         <div class="control-row">
-          <!-- <div class="input-group">
+          <div class="input-group">
             <label>Current time:</label>
             <input type="time" class="input-field" id="currentTime" value="12:00" />
-          </div> -->
+          </div>
           <div class="input-group">
             <label>Number of guests:</label>
             <input type="number" class="input-field" id="guestCount" min="1" max="8" value="2" />
@@ -117,7 +118,7 @@
           <h3>🌟 Front</h3>
           <div class="sections" id="frontSections"></div>
           <div class="table-2-controls">
-            <button class="split-btn" onclick="toggleTable2Split()">Table 2 拆分/合并</button>
+            <button class="split-btn" onclick="toggleTable2Split()">Table 2 Split / Merge</button>
           </div>
         </div>
         <div class="area">
@@ -151,7 +152,7 @@
       //   section3: { tables: [7, 27, 8, 24, 9, 21], server: null },
       // },
       back: {
-        section1: { tables: [51, 52, 53], server: null },
+        section1: { tables: [51, 52, 53, , , ], server: null },
         section2: { tables: [41, 42, 43], server: null },
         section3: { tables: [31, 32, 33], server: null },
         overflow: { tables: [61, 62, 63], server: null },
@@ -197,7 +198,7 @@
       restaurantConfig.back.section1.server  = s1;
       restaurantConfig.back.section2.server  = s2;
       restaurantConfig.back.section3.server  = s3;
-      restaurantConfig.back.overflow.server  = s1; // overflow 默认给第一位
+      restaurantConfig.back.overflow.server  = ''; // overflow 默认给第一位
 
       initializeTableStates();
       renderRestaurant();
@@ -552,15 +553,31 @@
     function parseTime(t) { const [h, m] = t.split(':').map(Number); return h + m/60; }
 
     // 页面加载：默认当前时间
+    // document.addEventListener('DOMContentLoaded', () => {
+    //   try {
+    //     const now = new Date();
+    //     const hh = String(now.getHours()).padStart(2, '0');
+    //     const mm = String(now.getMinutes()).padStart(2, '0');
+    //     document.getElementById('currentTime').value = `${hh}:${mm}`;
+    //   } catch(e) {}
+    //   renderRestaurant();
+    // });
+
+    // 页面加载：实时更新时间
     document.addEventListener('DOMContentLoaded', () => {
-      try {
+      function updateCurrentTime() {
         const now = new Date();
         const hh = String(now.getHours()).padStart(2, '0');
         const mm = String(now.getMinutes()).padStart(2, '0');
         document.getElementById('currentTime').value = `${hh}:${mm}`;
-      } catch(e) {}
+      }
+
+      updateCurrentTime(); // 先执行一次
+      setInterval(updateCurrentTime, 1000 * 10); // 每分钟更新一次
+
       renderRestaurant();
     });
+
   </script>
 </body>
 </html>
