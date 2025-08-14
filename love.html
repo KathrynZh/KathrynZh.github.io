@@ -1247,6 +1247,7 @@
                 const defaultSafeEnd2 = new Date('2025-07-19T03:02:00');
                 const defaultSafeStart3 = new Date('2025-07-25T13:27:00');
                 const defaultSafeEnd3 = new Date('2025-08-03T05:43:00');
+                const defaultSafeStart4 = new Date('2025-08-08T13:39:00');
 
                 const defaultBreakStart1 = defaultSafeEnd1;
                 const defaultBreakEnd1 = defaultSafeStart2;
@@ -1254,16 +1255,26 @@
                 //const defaultBreakEnd2 = new Date('2025-07-25T13:27:00');
                 const defaultBreakEnd2 = defaultSafeStart3;
                 const defaultBreakStart3 = defaultSafeEnd3;
+                const defaultBreakEnd3 = defaultSafeStart4;
 
-                const defaultNow = defaultBreakStart3;
+                const defaultNow = defaultSafeStart4;
 
                 const safeDuration1 = defaultSafeEnd1 - defaultSafeStart1;
                 const safeDuration2 = defaultSafeEnd2 - defaultSafeStart2;
                 const safeDuration3 = defaultSafeEnd3 - defaultSafeStart3;
                 const breakDuration1 = defaultBreakEnd1 - defaultBreakStart1;
                 const breakDuration2 = defaultBreakEnd2 - defaultBreakStart2;
+                const breakDuration3 = defaultBreakEnd3 - defaultBreakStart3;
 
                 const testHistory = [
+                  {
+                    id: 'break-3',
+                    isBreak: true,
+                    startTime: defaultBreakStart3.toISOString(),
+                    endTime: defaultBreakEnd3.toISOString(),
+                    duration: breakDuration3,
+                    durationText: formatDuration(breakDuration3),
+                  },
                   {
                     id: 'safe-3',
                     isBreak: false,
@@ -1313,23 +1324,23 @@
                 await saveHistoryToServer();   // ✅ 调用时将使用最新数据
 
               // ✅ 新增：强制写入 isHeartbroken: false
-              // await fetch(`${BASE_URL}/start-time`, {
-              //   method: 'POST',
-              //   headers: { 'Content-Type': 'application/json' },
-              //   body: JSON.stringify({
-              //     startTime: '2025-07-25T17:27:00.000Z',
-              //     isHeartbroken: false
-              //   })
-              // });
-
               await fetch(`${BASE_URL}/start-time`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  startTime: '2025-08-03T09:43:00.000Z',
-                  isHeartbroken: true
+                  startTime: '2025-08-08T17:39:00.000Z',
+                  isHeartbroken: false
                 })
               });
+
+              // await fetch(`${BASE_URL}/start-time`, {
+              //   method: 'POST',
+              //   headers: { 'Content-Type': 'application/json' },
+              //   body: JSON.stringify({
+              //     startTime: '2025-08-03T09:43:00.000Z',
+              //     isHeartbroken: true
+              //   })
+              // });
 
               initializeApp();
             }
