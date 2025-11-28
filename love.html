@@ -1241,65 +1241,74 @@
                 return `${days}天${hours}小时${minutes}分钟`;
               }
 
-                const defaultSafeStart1 = new Date('2025-05-01T00:00:00');
+                /*const defaultSafeStart1 = new Date('2025-05-01T00:00:00');
                 const defaultSafeEnd1 = new Date('2025-05-04T04:00:00');
                 const defaultSafeStart2 = new Date('2025-05-17T14:19:00');
                 const defaultSafeEnd2 = new Date('2025-07-19T03:02:00');
                 const defaultSafeStart3 = new Date('2025-07-25T13:27:00');
                 const defaultSafeEnd3 = new Date('2025-08-03T05:43:00');
-                const defaultSafeStart4 = new Date('2025-08-08T13:39:00');
+                const defaultSafeStart4 = new Date('2025-08-08T13:39:00');*/
+
+                const defaultSafeStart1 = new Date('2025-09-17T00:00:00');
+                const defaultSafeEnd1 = new Date('2025-11-09T04:31:00');
+                const defaultSafeStart2 = new Date('2025-11-11T01:31:00');
 
                 const defaultBreakStart1 = defaultSafeEnd1;
+                const defaultBreakEnd1 = defaultSafeStart2;
+
+                /*const defaultBreakStart1 = defaultSafeEnd1;
                 const defaultBreakEnd1 = defaultSafeStart2;
                 const defaultBreakStart2 = defaultSafeEnd2;
                 //const defaultBreakEnd2 = new Date('2025-07-25T13:27:00');
                 const defaultBreakEnd2 = defaultSafeStart3;
                 const defaultBreakStart3 = defaultSafeEnd3;
-                const defaultBreakEnd3 = defaultSafeStart4;
+                const defaultBreakEnd3 = defaultSafeStart4;*/
 
-                // const defaultNow = new Date('2025-08-08T13:39:00');
-                const defaultNow = defaultSafeStart4;
+                //const defaultNow = new Date('2025-08-08T13:39:00');
+                //const defaultNow = defaultSafeStart4;
+                defaultNow = defaultSafeStart2;
+                //const defaultNow = new Date('2025-11-11T01:31:00');
 
                 const safeDuration1 = defaultSafeEnd1 - defaultSafeStart1;
-                const safeDuration2 = defaultSafeEnd2 - defaultSafeStart2;
-                const safeDuration3 = defaultSafeEnd3 - defaultSafeStart3;
+                // const safeDuration2 = defaultSafeEnd2 - defaultSafeStart2;
+                // const safeDuration3 = defaultSafeEnd3 - defaultSafeStart3;
                 const breakDuration1 = defaultBreakEnd1 - defaultBreakStart1;
-                const breakDuration2 = defaultBreakEnd2 - defaultBreakStart2;
-                const breakDuration3 = defaultBreakEnd3 - defaultBreakStart3;
+                // const breakDuration2 = defaultBreakEnd2 - defaultBreakStart2;
+                // const breakDuration3 = defaultBreakEnd3 - defaultBreakStart3;
 
                 const testHistory = [
-                  {
-                    id: 'break-3',
-                    isBreak: true,
-                    startTime: defaultBreakStart3.toISOString(),
-                    endTime: defaultBreakEnd3.toISOString(),
-                    duration: breakDuration3,
-                    durationText: formatDuration(breakDuration3),
-                  },
-                  {
-                    id: 'safe-3',
-                    isBreak: false,
-                    startTime: defaultSafeStart3.toISOString(),
-                    endTime: defaultSafeEnd3.toISOString(),
-                    duration: safeDuration3,
-                    durationText: formatDuration(safeDuration3),
-                  },
-                  {
-                    id: 'break-2',
-                    isBreak: true,
-                    startTime: defaultBreakStart2.toISOString(),
-                    endTime: defaultBreakEnd2.toISOString(),
-                    duration: breakDuration2,
-                    durationText: formatDuration(breakDuration2),
-                  },
-                  {
-                    id: 'safe-2',
-                    isBreak: false,
-                    startTime: defaultSafeStart2.toISOString(),
-                    endTime: defaultSafeEnd2.toISOString(),
-                    duration: safeDuration2,
-                    durationText: formatDuration(safeDuration2),
-                  },
+                  // {
+                  //   id: 'break-3',
+                  //   isBreak: true,
+                  //   startTime: defaultBreakStart3.toISOString(),
+                  //   endTime: defaultBreakEnd3.toISOString(),
+                  //   duration: breakDuration3,
+                  //   durationText: formatDuration(breakDuration3),
+                  // },
+                  // {
+                  //   id: 'safe-3',
+                  //   isBreak: false,
+                  //   startTime: defaultSafeStart3.toISOString(),
+                  //   endTime: defaultSafeEnd3.toISOString(),
+                  //   duration: safeDuration3,
+                  //   durationText: formatDuration(safeDuration3),
+                  // },
+                  // {
+                  //   id: 'break-2',
+                  //   isBreak: true,
+                  //   startTime: defaultBreakStart2.toISOString(),
+                  //   endTime: defaultBreakEnd2.toISOString(),
+                  //   duration: breakDuration2,
+                  //   durationText: formatDuration(breakDuration2),
+                  // },
+                  // {
+                  //   id: 'safe-2',
+                  //   isBreak: false,
+                  //   startTime: defaultSafeStart2.toISOString(),
+                  //   endTime: defaultSafeEnd2.toISOString(),
+                  //   duration: safeDuration2,
+                  //   durationText: formatDuration(safeDuration2),
+                  // },
                   {
                     id: 'break-1',
                     isBreak: true,
@@ -1329,7 +1338,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  startTime: '2025-08-08T17:39:00.000Z',
+                  startTime: '2025-11-11T05:31:00.000Z',
                   isHeartbroken: false
                 })
               });
