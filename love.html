@@ -954,7 +954,9 @@
             let message = '';
 
             if (!isHeartbroken) {
-                if (days >= 100) {
+                if (days >= 180) {
+                    message = `本恋爱已安全运行 ${days} 天，系统认证：你们果然是天生一对 💞`;
+                } else if (days >= 100) {
                     message = `不知不觉就已经 ${days} 天啦，你们进步很快噢！朝着下一个100天出发吧！`;
                 } else if (days >= 60) {
                     message = `本恋爱已连续安全运行 ${days} 天，系统认证：超级稳定情侣 👩🏻‍❤️‍💋‍👨🏻`;
